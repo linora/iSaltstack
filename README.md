@@ -1,9 +1,9 @@
-## saltstack 初始化
+## 一. saltstack 初始化
 
 **Redhat/CentOS 平台安装方法参照：**
   https://repo.saltstack.com/#rhel
 
-**master简单配置**
+## 二. master简单配置
 
 ```bash
 # 1. master 配置文件定制
