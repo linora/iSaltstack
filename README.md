@@ -6,7 +6,9 @@
 **master简单配置**
 
 ```bash
-# cat /etc/salt/master
+# 1. master 配置文件定制
+cat /etc/salt/master
+
 file_roots:
   base:
     - /root/myProj/DB2s_cmmd/salt/base/services
@@ -17,6 +19,26 @@ file_roots:
   prod:
     - /srv/salt/prod/services
     - /srv/salt/prod/states
+
+# 2. minion 配置文件定制
+cat /etc/salt/minion
+
+id: c7
+master: master-ip-address
+
+# 3. 配置服务为非手动启动
+
+# rhel 6.x
+chkconfig salt-master/salt-minion off
+
+# rhel 7.x
+systemctl disable salt-master/salt-minion
+
+# 4. 启动salt服务
+
+service salt-master start
+service salt-minion start
+
 ```
 
 
