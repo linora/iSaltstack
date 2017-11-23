@@ -1,4 +1,4 @@
-## saltstack安装
+## saltstack 初始化
 
 **Redhat/CentOS 平台安装方法参照：**
   https://repo.saltstack.com/#rhel
