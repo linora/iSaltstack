@@ -1,12 +1,12 @@
-## 一. saltstack 初始化
+## 一. Saltstack 安装
 
 **Redhat/CentOS 平台安装方法参照：**
   https://repo.saltstack.com/#rhel
 
-## 二. master简单配置
+## 二. 快速配置
 
+**1. master 配置文件定制**
 ```bash
-# 1. master 配置文件定制
 cat /etc/salt/master
 
 file_roots:
@@ -19,26 +19,26 @@ file_roots:
   prod:
     - /srv/salt/prod/services
     - /srv/salt/prod/states
+```
 
-# 2. minion 配置文件定制
+**2. minion 配置文件定制**
+```bash
 cat /etc/salt/minion
 
 id: c7
 master: master-ip-address
+```
 
-# 3. 配置服务为非手动启动
-
+**3. 配置服务为非手动启动**
+```bash
 # rhel 6.x
 chkconfig salt-master/salt-minion off
 
 # rhel 7.x
 systemctl disable salt-master/salt-minion
-
-# 4. 启动salt服务
-
+```
+**4. 启动salt服务**
+```bash
 service salt-master start
 service salt-minion start
-
 ```
-
-
