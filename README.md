@@ -1,11 +1,11 @@
 ## saltstack安装
 
-Redhat/CentOS 平台安装方法参照：
+**Redhat/CentOS 平台安装方法参照：**
   https://repo.saltstack.com/#rhel
 
-master简单配置
+**master简单配置**
 
-```
+```bash
 # cat /etc/salt/master
 file_roots:
   base:
