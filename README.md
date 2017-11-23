@@ -43,7 +43,7 @@ service salt-master start
 service salt-minion start
 ```
 
-## Saltstack 常用资源
+## 三. Saltstack 常用资源
 **1. Reference**
 
 https://docs.saltstack.com/en/latest/ref/
