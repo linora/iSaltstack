@@ -41,7 +41,7 @@ ref:
 
 **操作风险**
 
-  - 较危险，由于备份任务为IO密集型操作，请根据实际业务负载调整crontab中脚本运行时段（默认21:00执行数据库备份）
+  - 较危险，由于备份任务为IO密集型操作，请根据实际业务负载调整crontab中脚本运行时段（默认21:00执行数据库备份）
 
 **功能说明**
   
@@ -65,12 +65,12 @@ ref:
 
 **使用前准备**
 
-  - 在base/states中创建resources目录，目录中包含必要的资源（rpm包）
+  - 在base/states中创建resources目录，目录中包含必要的资源（rpm包）
   - 实现微信报警功能，即定制wechat.py
   - 设置grains mysql_home item指向mysql 数据文件根目录
   - 设置grains server_desc item，格式为"ipaddr_业务简短描述"
-  - 在base/states/resources/mysql/sql中取得create_backup_user.sql文件，创建锁监控用函数及备份用用户名密码
-  - 修改jinja2文件中mysql_backup_job.j2、mysql_backup_monitor_db_lock.j2及mysql_backup_monitor_disk.j2中DBUSR及DBPWD变量为实际备份用户名及密码
+  - 在base/states/resources/mysql/sql中取得create_backup_user.sql文件，创建锁监控用函数及备份用用户名密码
+  - 修改jinja2文件中mysql_backup_job.j2、mysql_backup_monitor_db_lock.j2及mysql_backup_monitor_disk.j2中DBUSR及DBPWD变量为实际备份用户名及密码
 
 **其他说明**
 
