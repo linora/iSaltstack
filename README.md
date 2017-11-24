@@ -116,4 +116,3 @@ ref:
 
   - CentOS
   - Redhat
-
