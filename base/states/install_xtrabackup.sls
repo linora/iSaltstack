@@ -1,33 +1,28 @@
-{% set pkg_home = 'resources/mysql/pkgs' %}
-{% set backup_home = grains['mysql_home'] + '/' + 'mysql_backup_dir' %}
-{% set script_home = '/root/DBAScripts' %}
-{% set os_family = grains['os_family'] %}
-{% set osarch = grains['osarch'] %}
-{% set osmajorrelease = grains['osmajorrelease'] %}
+{% import './jinja2/common.j2' as common %}
+
 
 install_xtrabackup_deps_pkgs:
   pkg.installed:
-{% if os_family == 'RedHat' and osarch == 'x86_64'   and osmajorrelease == 7 %}
+{% if common.os_family == 'RedHat' and common.osarch == 'x86_64'   and common.osmajorrelease == 7 %}
     - pkgs:
       - perl-Digest-MD5
       - libev.x86_64
-{% elif os_family == 'RedHat' and osarch == 'x86_64' and osmajorrelease == 6 %}
+{% elif common.os_family == 'RedHat' and common.osarch == 'x86_64' and common.osmajorrelease == 6 %}
     - sources:
-      - libev: salt://{{ pkg_home + 'libev-4.15-1.el6.rf.x86_64.rpm' }}
+      - libev: salt://{{ common.pkg_home + '/' + 'libev-4.15-1.el6.rf.x86_64.rpm' }}
 {% else %}
     - sources:
       - None
 {% endif %}
 
 
-
 install_xtrabackup_pkgs:
   pkg.installed:
     - sources:
-{% if os_family == 'RedHat' and osarch == 'x86_64'   and osmajorrelease == 7 %}
-      - percona-xtrabackup-24: salt://{{ pkg_home + '/' + 'percona-xtrabackup-24-2.4.8-1.el7.x86_64.rpm' }}
-{% elif os_family == 'RedHat' and osarch == 'x86_64' and osmajorrelease == 6 %}
-      - percona-xtrabackup-24: salt://{{ pkg_home + '/' + 'percona-xtrabackup-24-2.4.8-1.el6.x86_64.rpm' }}
+{% if common.os_family == 'RedHat' and common.osarch == 'x86_64'   and common.osmajorrelease == 7 %}
+      - percona-xtrabackup-24: salt://{{ common.pkg_home + '/' + 'percona-xtrabackup-24-2.4.8-1.el7.x86_64.rpm' }}
+{% elif common.os_family == 'RedHat' and common.osarch == 'x86_64' and common.osmajorrelease == 6 %}
+      - percona-xtrabackup-24: salt://{{ common.pkg_home + '/' + 'percona-xtrabackup-24-2.4.8-1.el6.x86_64.rpm' }}
 {% else %}
       - None 
 {% endif %} 
@@ -35,8 +30,7 @@ install_xtrabackup_pkgs:
       - pkg: install_xtrabackup_deps_pkgs 
 
 
-
-{{ backup_home }}:
+{{ common.backup_home }}:
   file.directory:
     - user: root
     - group: root
@@ -46,8 +40,7 @@ install_xtrabackup_pkgs:
       - pkg: install_xtrabackup_pkgs 
 
 
-
-{{ script_home }}:
+{{ common.script_home }}:
   file.directory:
     - user: root
     - group: root
@@ -55,8 +48,7 @@ install_xtrabackup_pkgs:
     - makedires: True
 
 
-
-{{ script_home + '/backup' }}:
+{{ common.script_home + '/backup' }}:
   file.directory:
     - user: root
     - group: root
@@ -64,8 +56,7 @@ install_xtrabackup_pkgs:
     - makedires: True 
 
 
-
-{{ script_home + '/backup/mysql_backup_job.sh'}}:
+{{ common.script_home + '/backup/mysql_backup_job.sh'}}:
   file.managed:
     - source: salt://jinja2/mysql_backup_job.j2
     - user: root
@@ -74,8 +65,7 @@ install_xtrabackup_pkgs:
     - template: jinja
 
 
-
-{{ script_home + '/backup/mysql_backup_monitor_db_lock.sh'}}:
+{{ common.script_home + '/backup/mysql_backup_monitor_db_lock.sh'}}:
   file.managed:
     - source: salt://jinja2/mysql_backup_monitor_db_lock.j2
     - user: root
@@ -84,8 +74,7 @@ install_xtrabackup_pkgs:
     - template: jinja
 
 
-
-{{ script_home + '/backup/mysql_backup_monitor_disk.sh'}}:
+{{ common.script_home + '/backup/mysql_backup_monitor_disk.sh'}}:
   file.managed:
     - source: salt://jinja2/mysql_backup_monitor_disk.j2
     - user: root
@@ -94,33 +83,29 @@ install_xtrabackup_pkgs:
     - template: jinja
 
 
-
-{{ script_home + '/backup/wechat.py'}}:
+{{ common.script_home + '/backup/wechat_priv.py'}}:
   file.managed:
-    - source: salt://python/wechat.py
+    - source: salt://python/wechat_priv.py
     - user: root
     - group: root
     - mode: 600 
 
 
-
-{{ script_home + '/backup/mysql_backup_monitor_disk.sh 2>/dev/null' }}:
+{{ common.script_home + '/backup/mysql_backup_monitor_disk.sh 2>/dev/null' }}:
   cron.present:
     - user: root
     - minute: 50 
     - hour: 20
 
 
-
-{{ script_home + '/backup/mysql_backup_monitor_db_lock.sh 2>/dev/null ' }}:
+{{ common.script_home + '/backup/mysql_backup_monitor_db_lock.sh 2>/dev/null ' }}:
   cron.present:
     - user: root
     - minute: 50 
     - hour: 20
 
 
-
-{{ script_home + '/backup/mysql_backup_job.sh 2>/dev/null' }}:
+{{ common.script_home + '/backup/mysql_backup_job.sh 2>/dev/null' }}:
   cron.present:
     - user: root
     - minute: 0 

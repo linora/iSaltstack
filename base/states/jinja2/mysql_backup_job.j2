@@ -1,6 +1,7 @@
 #!/bin/bash
 
-{% set backup_home = grains['mysql_home'] + '/mysql_backup_dir' %}
+{% import './jinja2/common.j2' as common %}
+
 {% set script_home = '/root/DBAScripts/backup' %}
 
 # 如果IO出现瓶颈，备份命令前使用：ionice -c2 -n7 nice -n19或者ionice -c3 nice -n19
@@ -8,11 +9,11 @@
 ##############################################################
 #def vars
 
-DBUSR='xxx'
-DBPWD='xxx'
+DBUSR='{{ common.db_back_username }}'
+DBPWD='{{ common.db_back_password }}'
 TABFILE='{{ script_home }}/tab.lst'
 MYCFGFILE='/etc/my.cnf'
-BACKUPDIR='{{ backup_home }}'
+BACKUPDIR='{{ common.backup_home }}'
 DAY_BACKUPDIR="${BACKUPDIR}/$(date '+%Y%m%d%H')"
 SYS_DB="${BACKUPDIR}/sys_db.sql.$(date '+%Y%m%d%H')"
 
@@ -56,4 +57,4 @@ done
 ##############################################################
 #delete old backup pieces
 
-find {{ backup_home }}/* -mtime +1 -name "*" -exec rm -rf {} \;
+find {{ common.backup_home }}/* -mtime +1 -name "*" -exec rm -rf {} \;
