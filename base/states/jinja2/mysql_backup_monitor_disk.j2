@@ -13,7 +13,7 @@ do
   if [ $MAX_USED_PCT -gt 85 ]
     then
       killall -g -w mysql_backup_job.sh
-      python {{ script_home }}/wechat.py backup_failed:disk:{{ server_desc }}
+      python {{ script_home }}/wechat_priv.py backup_failed:disk:{{ server_desc }}
       exit 1
   else
       sleep 10

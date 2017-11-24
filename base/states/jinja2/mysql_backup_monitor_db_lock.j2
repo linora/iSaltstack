@@ -11,7 +11,7 @@ ACTIVE_SESSS=$(mysql -u${DBUSR} -p${DBPWD} -s -L -N -D mysql -e "select monitor_
 if [ $ACTIVE_SESSS -ne 0 ]
 then
   killall -g -w mysql_backup_job.sh
-  python {{ script_home }}/wechat.py backup_failed:db_lock:{{ server_desc }}
+  python {{ script_home }}/wechat_priv.py backup_failed:db_lock:{{ server_desc }}
   exit 1
 else
   :
