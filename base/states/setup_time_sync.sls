@@ -4,9 +4,7 @@ install_ntpd:
   pkg.installed:
     - name: install_ntpd
     - pkgs:
-      - ntpdate 
-
-
+      - ntpdate
 
 /usr/sbin/ntpdate {{ time_server }};hwclock --systohc:
   cron.present:
