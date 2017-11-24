@@ -8,20 +8,19 @@
 
   请注意每个工具介绍中的【操作风险】提示部分。
 
-**关于我**
-
-Home：
-
-  - https://github.com/linora
+**其他**
 
 Owner: linora
 
   - Oracle/MySQL/PostgreSQL DBA
+  
+HomePages：
+
+  - https://github.com/linora
 
 Mail: 984513956@qq.com
 
 Wechat: 984513956
-
 
 # 二. base/states 工具介绍
 
@@ -35,7 +34,6 @@ The core of the Salt State system is the SLS, or SaLt State file. The SLS is a r
 
 ref:
   - https://docs.saltstack.com/en/latest/topics/tutorials/starting_states.html
-
 
 ## 1. install_xtrabackup
 
@@ -99,7 +97,6 @@ ref:
  
   - mysql 5.6.x
   - mysql 5.7.x
-
 
 ## 3. setup_time_sync
 
