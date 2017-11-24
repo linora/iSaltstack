@@ -66,7 +66,7 @@ ref:
 **使用前准备**
 
   - 在base/states中创建resources目录，目录中包含必要的资源（rpm包）
-  - 实现微信报警功能，即定制wechat.py
+  - 实现微信报警功能，即定制wechat.py
   - 设置grains mysql_home item指向mysql 数据文件根目录
   - 设置grains server_desc item，格式为"ipaddr_业务简短描述"
   - 在base/states/resources/mysql/sql中取得create_backup_user.sql文件，创建锁监控用函数及备份用用户名密码
