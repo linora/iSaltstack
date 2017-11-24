@@ -1,0 +1,21 @@
+#!/bin/bash
+
+{% set server_desc = grains['server_desc'] %}
+{% set script_home = '/root/DBAScripts/backup' %}
+
+DBUSR='xxx'
+DBPWD='xxx'
+
+for idx in {1..1080}
+do
+  MAX_USED_PCT=$(df -P 2>/dev/null| column -t | awk '{print $5}' | grep '[0-9]' | sed 's/%//g' | sort -n | tail -1)
+
+  if [ $MAX_USED_PCT -gt 85 ]
+    then
+      killall -g -w mysql_backup_job.sh
+      python {{ script_home }}/wechat.py backup_failed:disk:{{ server_desc }}
+      exit 1
+  else
+      sleep 10
+  fi
+done
