@@ -22,6 +22,8 @@ F_GET_DBS () {
 mysql -N -u${DBUSR} -p${DBPWD} > /tmp/xtrabackup_dbs 2>/dev/null <<EOF
 show databases;
 EOF
+
+cat /tmp/xtrabackup_dbs
 }
 
 mkdir -p ${BACKUPDIR}
@@ -40,9 +42,8 @@ service iptables status > ${BACKUPDIR}/iptables.$(date "+%Y%m%d%H") 2>&1
 firewall-cmd --list-all > ${BACKUPDIR}/firewall.$(date "+%Y%m%d%H") 2>&1
 crontab -l > ${BACKUPDIR}/crontab.$(date "+%Y%m%d%H") 2>&1
 
-# db metadata backup(mysql & information schema)
+# db metadata backup(mysql)
 mysqldump -f -u${DBUSR} -p${DBPWD} mysql > ${SYS_DB}
-mysqldump -f --skip-lock-tables -u${DBUSR} -p${DBPWD} information_schema >> ${SYS_DB}
 
 # metadata backup(per db)
 F_GET_DBS | while read DB

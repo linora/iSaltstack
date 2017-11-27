@@ -7,7 +7,7 @@
 DBUSR='{{ common.db_back_username }}'
 DBPWD='{{ common.db_back_password }}'
 
-ACTIVE_SESSS=$(mysql -u${DBUSR} -p${DBPWD} -s -L -N -D mysql -e "select monitor_activity();" 2>/dev/null)
+ACTIVE_SESSS=$(mysql -u${DBUSR} -p${DBPWD} -s -L -N -D mysql -e "select monitor_activity(10,21600);" 2>/dev/null)
 
 if [ $ACTIVE_SESSS -ne 0 ]
 then
