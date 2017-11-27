@@ -284,3 +284,8 @@ salt '*' setup_os.iptables_status
 salt '*' setup_os.add_iptables_rule4minion 192.168.168.2 32
 ```
 
+## 四. saltstack returners功能启用
+
+**参照：**
+  - https://github.com/linora/iSaltstack/wiki/3.-%E8%AE%BE%E7%BD%AESaltstack-retuner
+  
