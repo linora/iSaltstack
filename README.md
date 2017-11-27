@@ -7,6 +7,12 @@
 **约定**
 
   请注意每个工具介绍中的【操作风险】提示部分。
+  
+**项目wiki**
+
+  - https://github.com/linora/iSaltstack/wiki
+
+项目其他文档内容请移步上文wiki。
 
 **其他**
 
