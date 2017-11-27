@@ -290,7 +290,9 @@ salt '*' setup_os.iptables_status
 salt '*' setup_os.add_iptables_rule4minion 192.168.168.2 32
 ```
 
-## 四. saltstack returners功能启用
+## 四. saltstack mysql returner功能启用
+
+returner 返回数据到mysql后，可供类似工单系统使用，或者公司内部cmdb使用。
 
 **参照：**
   - https://github.com/linora/iSaltstack/wiki/3.-%E8%AE%BE%E7%BD%AESaltstack-retuner
