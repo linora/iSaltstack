@@ -22,7 +22,7 @@ Mail: 984513956@qq.com
 
 Wechat: 984513956
 
-# 二. base/states 工具介绍
+# 二. base/states 工具集介绍
 
 关于saltstack states module:
 
@@ -106,7 +106,7 @@ ref:
 
 **功能说明**
 
-  - 添加时间同步任务到系统中。
+  - 添加时间同步任务到系统中，同步周期为五分钟。
 
 **使用示例**
 
@@ -116,3 +116,119 @@ ref:
 
   - CentOS
   - Redhat
+  
+# 三. base/services 工具集介绍
+
+## 1. 安装MySQL 5.6/7 On CentOS/Redhat 6/7
+
+**操作风险**
+
+  - 无
+
+**功能说明**
+  
+  - MySQL 安装最佳实践（安装目录定制 及 参数文件最佳化）
+  
+**使用示例**
+
+  - mysql 5.6
+
+```bash
+# Define vars
+TARGET_HOST='minion-one'
+MYSQL_HOME='/app/mysql'
+SERVER_ID=0
+LARGE_PAGES=1
+# Per huge page size is: 2M
+HUGE_PAGES=256
+BUFFER_POOL_RATIO=0.125
+MYSQL_DISK_LABEL='/dev/mapper/vg_c65-lv_root'
+
+# Setup grains item
+salt "${TARGET_HOST}" grains.setvals "{'mysql_home':\"${MYSQL_HOME}\",
+                                       'buffer_pool_ratio':${BUFFER_POOL_RATIO},
+                                       'server_id':${SERVER_ID},
+                                       'large_pages':${LARGE_PAGES},
+                                       'huge_pages_number':${HUGE_PAGES},
+                                       'mysql_disk_label':\"${MYSQL_DISK_LABEL}\"}"
+
+# Distribute mysql tarball
+salt --timeout=1200 "${TARGET_HOST}" cp.get_file \
+"salt://resources/mysql/pkgs/MySQL-5.6.37-1.el{{grains.osmajorrelease}}.x86_64.rpm-bundle.tar" \
+"/tmp/MySQL-5.6.37-1.el{{grains.osmajorrelease}}.x86_64.rpm-bundle.tar" \
+template=jinja \
+saltenv=base
+
+# Distribute my.cnf file
+salt "${TARGET_HOST}" state.sls dist_my56_cnf
+
+#
+salt "${TARGET_HOST}" --timeout=1200 install_mysql5dot67_on_redhat67.install_mysql56
+salt "${TARGET_HOST}" --timeout=1200 install_mysql5dot67_on_redhat67.setup_mysql56
+```
+
+  - MySQL 5.7
+
+```bash
+TARGET_HOST='c7'
+MYSQL_HOME='/app/mysql'
+SERVER_ID=0
+LARGE_PAGES=1
+# Per huge page size is: 2M
+HUGE_PAGES=256
+CHUNK_COUNT=2
+MYSQL_DISK_LABEL='/dev/sdb1'
+
+
+salt "${TARGET_HOST}" grains.setvals "{'mysql_home':\"${MYSQL_HOME}\",
+                                       'chunk_count':${CHUNK_COUNT},
+                                       'server_id':${SERVER_ID},
+                                       'large_pages':${LARGE_PAGES},
+                                       'huge_pages_number':${HUGE_PAGES},
+                                       'mysql_disk_label':\"${MYSQL_DISK_LABEL}\"}"
+
+# Distribute mysql tarball
+salt --timeout=1200 "${TARGET_HOST}" cp.get_file \
+"salt://resources/mysql/pkgs/mysql-5.7.20-1.el{{grains.osmajorrelease}}.x86_64.rpm-bundle.tar" \
+"/tmp/mysql-5.7.20-1.el{{grains.osmajorrelease}}.x86_64.rpm-bundle.tar" \
+template=jinja \
+saltenv=base
+
+salt "${TARGET_HOST}" state.sls dist_my57_cnf
+
+
+salt "${TARGET_HOST}" --timeout=86400 install_mysql5dot67_on_redhat67.install_mysql57
+salt "${TARGET_HOST}" --timeout=86400 install_mysql5dot67_on_redhat67.setup_mysql57
+```
+
+**OS 支持情况**
+
+  - CentOS 6.x/7.x
+  - Redhat 6.x/7.x
+
+**MySQL 支持情况**
+ 
+  - mysql 5.6.x
+  - mysql 5.7.x
+
+**预检查项**
+
+  - 目标环境中必须存在grains 中指定的mysql disk label
+  - 目标环境操作系统版本必须符合预期
+  - 目标环境中没有运行中的mysqld进程
+  - 目标环境中没有安装除mysql-libs以外的其他mysql相关包
+  - 目标环境中没有创建grains中指定的mysql_home目录
+
+**安装步骤**
+
+  说明：以下操作全部为标准化流程，即修改配置前进行备份，且修改全部为非重复。
+
+  - 手动格式化目标环境中mysql所使用磁盘
+  - 挂载目标环境mysql所使用磁盘，并添加相关条目到/etc/fstab中
+  - 禁用selinux
+  - 初始化防火墙（初始设置中，3306端口不对外开放）
+  - 设置所有disk io scheduler为deadline
+  - 其他设置（limits.conf及sysctl.conf）
+  - 安装阶段1（安装mysql rpm包，并关闭mysql服务）
+  - 设置large pages
+  - 安装阶段2（定制my.cnf、按最佳实践定制mysql安装目录、重新初始化及启动mysql服务）
