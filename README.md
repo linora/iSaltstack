@@ -164,6 +164,7 @@ salt "${TARGET_HOST}" state.sls dist_my56_cnf
 
 #
 salt "${TARGET_HOST}" --timeout=1200 install_mysql5dot67_on_redhat67.install_mysql56
+# 可选步骤（初始化mysql root密码，并返回最新密码）
 salt "${TARGET_HOST}" --timeout=1200 install_mysql5dot67_on_redhat67.setup_mysql56
 ```
 
@@ -198,6 +199,7 @@ salt "${TARGET_HOST}" state.sls dist_my57_cnf
 
 
 salt "${TARGET_HOST}" --timeout=86400 install_mysql5dot67_on_redhat67.install_mysql57
+# 可选步骤（初始化mysql root密码，并返回最新密码）
 salt "${TARGET_HOST}" --timeout=86400 install_mysql5dot67_on_redhat67.setup_mysql57
 ```
 
