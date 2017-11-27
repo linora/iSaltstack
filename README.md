@@ -232,3 +232,53 @@ salt "${TARGET_HOST}" --timeout=86400 install_mysql5dot67_on_redhat67.setup_mysq
   - 安装阶段1（安装mysql rpm包，并关闭mysql服务）
   - 设置large pages
   - 安装阶段2（定制my.cnf、按最佳实践定制mysql安装目录、重新初始化及启动mysql服务）
+  
+  
+## 2. 防火墙：MySQL：添加/删除/查看 mysql 3306端口访问权限
+
+**OS 支持情况**
+
+  - CentOS 6.x/7.x
+  - Redhat 6.x/7.x
+  
+**使用示例**
+
+  - CentOS/RHEL 7.x
+
+```bash
+# 添加规则
+salt '*' setup_os.add_rich_rule 192.168.168.2 32
+
+# 移除规则
+salt '*' setup_os.remove_rich_rule 192.168.168.2 32
+
+# 查看规则
+salt '*' setup_os.firewall_cmd_list_all
+```
+
+  - CentOS/RHEL 6.x
+
+```bash
+# 添加规则
+salt '*' setup_os.add_iptables_rule 192.168.168.2 32
+
+# 移除规则
+salt '*' setup_os.remove_iptables_rule 192.168.168.2 32
+
+# 查看规则
+salt '*' setup_os.iptables_status
+```
+
+## 3. 防火墙：saltstack：添加 minion对应master端口访问权限
+
+**OS 支持情况**
+
+  - CentOS 6.x/7.x
+  - Redhat 6.x/7.x
+  
+**使用示例**
+
+```bash
+salt '*' setup_os.add_iptables_rule4minion 192.168.168.2 32
+```
+
