@@ -69,6 +69,8 @@ rm -f /var/lib/mysql/RPM_UPGRADE_MARKER
 
 cd /tmp
 tar -xvf MySQL*5.6.37*.tar >/dev/null 2>/dev/null
+yum install -y perl*JSON perl*Time*HiRes net-tools >/dev/null 2>/dev/null
+rpm -e --nodeps mariadb-libs >/dev/null 2>/dev/null
 rpm -ivh MySQL*5.6.37*.rpm >/dev/null 2>/dev/null
 service mysql stop >/dev/null 2>/dev/null
 
@@ -136,7 +138,8 @@ rm -f /var/lib/mysql/RPM_UPGRADE_MARKER
 cd /tmp
 tar -xvf mysql*5.7.20*.tar >/dev/null 2>/dev/null
 rm -rf mysql*minimal*5.7.20*.rpm
-yum install -y perl*JSON perl*Time*HiRes >/dev/null 2>/dev/null
+yum install -y perl*JSON perl*Time*HiRes net-tools >/dev/null 2>/dev/null
+rpm -e --nodeps mariadb-libs >/dev/null 2>/dev/null
 rpm -ivh mysql*5.7.20*.rpm >/dev/null 2>/dev/null
 service mysql stop >/dev/null 2>/dev/null
 service mysqld stop >/dev/null 2>/dev/null

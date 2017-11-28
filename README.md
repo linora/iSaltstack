@@ -100,8 +100,9 @@ salt "${TARGET_HOST}" state.sls install_xtrabackup
 
 **使用示例**
 
+  - MySQL 5.6
+  
 ```bash
-######################## MySQL 5.6 ########################
 # Define vars
 TARGET_HOST='*'
 MYSQL_HOME='/app/mysql'
@@ -122,8 +123,11 @@ salt "${TARGET_HOST}" grains.setvals "{'mysql_home':\"${MYSQL_HOME}\",
                                        }"
 
 salt "${TARGET_HOST}" state.sls dist_my56_cnf
+```
 
-######################## MySQL 5.7 ########################
+  - MySQL 5.7
+  
+```bash
 TARGET_HOST='*'
 MYSQL_HOME='/app/mysql'
 SERVER_ID=0
@@ -194,21 +198,23 @@ salt "${TARGET_HOST}" state.sls dist_my57_cnf
 
 ```bash
 # Define vars
-TARGET_HOST='minion-one'
+TARGET_HOST='*'
 MYSQL_HOME='/app/mysql'
 SERVER_ID=0
-LARGE_PAGES=1
-# Per huge page size is: 2M
-HUGE_PAGES=256
+# mysql所占总内存百分比
 BUFFER_POOL_RATIO=0.125
-MYSQL_DISK_LABEL='/dev/mapper/vg_c65-lv_root'
+# mysql 是否启用large page特性：1启用，0禁用
+LARGE_PAGES=0
+# OS huge pages数量，一个pages为2MB大小
+HUGE_PAGES_NUMBER=0
+MYSQL_DISK_LABEL='/dev/mapper/centos-root'
 
 # Setup grains item
 salt "${TARGET_HOST}" grains.setvals "{'mysql_home':\"${MYSQL_HOME}\",
                                        'buffer_pool_ratio':${BUFFER_POOL_RATIO},
                                        'server_id':${SERVER_ID},
                                        'large_pages':${LARGE_PAGES},
-                                       'huge_pages_number':${HUGE_PAGES},
+                                       'huge_pages_number':${HUGE_PAGES_NUMBER},
                                        'mysql_disk_label':\"${MYSQL_DISK_LABEL}\"}"
 
 # Distribute mysql tarball
@@ -230,15 +236,16 @@ salt "${TARGET_HOST}" --timeout=1200 install_mysql5dot67_on_redhat67.setup_mysql
   - MySQL 5.7
 
 ```bash
-TARGET_HOST='c7'
+TARGET_HOST='*'
 MYSQL_HOME='/app/mysql'
 SERVER_ID=0
-LARGE_PAGES=1
-# Per huge page size is: 2M
-HUGE_PAGES=256
+# mysql 是否启用large page特性：1启用，0禁用
+LARGE_PAGES=0
+# OS huge pages数量，一个pages为2MB大小
+HUGE_PAGES_NUMBER=0
+# mysql 5.7中一个chunk为128M
 CHUNK_COUNT=2
-MYSQL_DISK_LABEL='/dev/sdb1'
-
+MYSQL_DISK_LABEL='/dev/mapper/centos-root'
 
 salt "${TARGET_HOST}" grains.setvals "{'mysql_home':\"${MYSQL_HOME}\",
                                        'chunk_count':${CHUNK_COUNT},
@@ -277,7 +284,7 @@ salt "${TARGET_HOST}" --timeout=86400 install_mysql5dot67_on_redhat67.setup_mysq
   - 目标环境中必须存在grains 中指定的mysql disk label
   - 目标环境操作系统版本必须符合预期
   - 目标环境中没有运行中的mysqld进程
-  - 目标环境中没有安装除mysql-libs以外的其他mysql相关包
+  - 目标环境中没有安装除mysql-libs/mariadb-libs以外的其他mysql相关包
   - 目标环境中没有创建grains中指定的mysql_home目录
 
 **安装步骤**
@@ -349,3 +356,5 @@ returner 返回数据到mysql后，可供类似工单系统使用，或者公司
 
 **参照：**
   - https://github.com/linora/iSaltstack/wiki/3.-%E8%AE%BE%E7%BD%AESaltstack-retuner
+  
+sfsd
