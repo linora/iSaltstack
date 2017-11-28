@@ -1,6 +1,5 @@
 ########################################################################################
-# 参考: https://dev.mysql.com/doc/refman/5.6/en/server-system-variables.html
-# 基本原则：尽量只设置静态参数（部分重要动态参数）
+# Ref: https://dev.mysql.com/doc/refman/5.6/en/server-system-variables.html
 
 {% set mysql_home = grains['mysql_home'] %}
 {% set server_id = grains['server_id'] %}
@@ -24,7 +23,7 @@ large-pages=on
 large-pages=off
 {% endif %}
 ########################################################################################
-# 基本参数
+# base params 
 
 server-id={{ server_id }}
 basedir='/usr/'
@@ -49,7 +48,6 @@ log_bin='{{ mysql_home }}/binlog_dir/mysql.bin'
 binlog_format=mixed
 expire_logs_days=2
 
-# undo设置，参考：https://dev.mysql.com/doc/refman/5.6/en/innodb-undo-tablespace.html
 innodb_undo_directory='{{ mysql_home }}/undo_dir'
 innodb_undo_tablespaces=4
 innodb_rollback_segments=128
@@ -59,13 +57,13 @@ max_sp_recursion_depth=255
 log_error='{{ mysql_home }}/err.log'
 
 ########################################################################################
-# 内存
+# mem 
 
-innodb_buffer_pool_size={{(mem_total * buffer_pool_ratio)//1 }}M
+innodb_buffer_pool_size={{ (mem_total * buffer_pool_ratio)//1 }}M
 innodb_buffer_pool_instances=2
 innodb_page_size=16K
 
-# 预热设置
+# warm setup
 innodb_buffer_pool_load_at_startup=0
 
 table_definition_cache=1000
@@ -73,29 +71,27 @@ table_open_cache_instances=2
 innodb_open_files=2000
 
 ########################################################################################
-# 网络
+# network 
 
-# 监听地址
+
 bind_address='*'
 
-# 应对连接风暴时队列大小
+
 back_log=100
 
 skip_name_resolve=1
 
 ########################################################################################
-# 安全
+# sec 
 
 disconnect_on_expired_password=0
 max_connect_errors=50
 
 ########################################################################################
-# 并发
+#  
 
-# auto increment锁模式：0（向后兼容）、1（锁到语句结束）、2（不加锁）
 innodb_autoinc_lock_mode=1
 
-# purge thread数量（最大32）
 innodb_purge_threads=8
 
 innodb_read_io_threads=4

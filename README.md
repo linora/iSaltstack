@@ -55,7 +55,16 @@ ref:
 
 **使用示例**
 
-  - state 'xx' state.sls install_xtrabackup
+```bash
+# Define vars
+TARGET_HOST='*'
+MYSQL_HOME='/app/mysql'
+
+# Setup grains item
+salt "${TARGET_HOST}" grains.setvals "{'mysql_home':\"${MYSQL_HOME}\"}"
+
+salt "${TARGET_HOST}" state.sls install_xtrabackup
+```
 
 **OS 支持情况**
 
@@ -70,15 +79,14 @@ ref:
 **使用前准备**
 
   - 在base/states中创建resources目录，目录中包含必要的资源（rpm包）
-  - 实现微信报警功能，即定制wechat.py
+  - 实现微信报警功能，即定制python/wechat_priv.py
   - 设置grains mysql_home item指向mysql 数据文件根目录
-  - 设置grains server_desc item，格式为"ipaddr_业务简短描述"
   - 在base/states/resources/mysql/sql中取得create_backup_user.sql文件，创建锁监控用函数及备份用用户名密码
-  - 修改jinja2文件中mysql_backup_job.j2、mysql_backup_monitor_db_lock.j2及mysql_backup_monitor_disk.j2中DBUSR及DBPWD变量为实际备份用户名及密码
+  - 在jinja2/common.j2中添加备份用数据库用户名密码
 
 **其他说明**
 
-  涉及到安全隐私，其中wechat.py脚本没有上传，此脚本可用来做微信实时报警，功能实现参考：https://www.cnblogs.com/hanyifeng/p/5368102.html
+  涉及到安全隐私，其中wechat_priv.py脚本没有上传，此脚本可用来做微信实时报警，功能实现参考：https://www.cnblogs.com/hanyifeng/p/5368102.html
 
 ## 2. dist_my56/57_cnf
 
@@ -92,7 +100,52 @@ ref:
 
 **使用示例**
 
-  - state 'xx' state.sls dist_my56_cnf
+```bash
+######################## MySQL 5.6 ########################
+# Define vars
+TARGET_HOST='*'
+MYSQL_HOME='/app/mysql'
+SERVER_ID=0
+# mysql所占总内存百分比
+BUFFER_POOL_RATIO=0.125
+# mysql 是否启用large page特性：1启用，0禁用
+LARGE_PAGES=0
+# OS huge pages数量，一个pages为2MB大小
+HUGE_PAGES_NUMBER=0
+
+# Setup grains item
+salt "${TARGET_HOST}" grains.setvals "{'mysql_home':\"${MYSQL_HOME}\",
+                                       'server_id':\"${SERVER_ID}\",
+                                       'buffer_pool_ratio':${BUFFER_POOL_RATIO},
+                                       'large_pages':\"${LARGE_PAGES}\",
+                                       'huge_pages_number':0                                       
+                                       }"
+
+salt "${TARGET_HOST}" state.sls dist_my56_cnf
+
+######################## MySQL 5.7 ########################
+TARGET_HOST='*'
+MYSQL_HOME='/app/mysql'
+SERVER_ID=0
+# mysql 是否启用large page特性：1启用，0禁用
+LARGE_PAGES=0
+# OS huge pages数量，一个pages为2MB大小
+HUGE_PAGES_NUMBER=0
+# mysql 5.7中一个chunk为128M
+CHUNK_COUNT=2
+
+# Setup grains item
+salt "${TARGET_HOST}" grains.setvals "{'mysql_home':\"${MYSQL_HOME}\",
+                                       'server_id':\"${SERVER_ID}\",
+                                       'chunk_count':${CHUNK_COUNT},
+                                       'large_pages':\"${LARGE_PAGES}\",
+                                       'huge_pages_number':0,
+                                       }"
+
+salt "${TARGET_HOST}" state.sls dist_my57_cnf
+```
+
+
 
 **OS 支持情况**
 
