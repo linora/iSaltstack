@@ -1,0 +1,61 @@
+#!/bin/bash
+
+{% import './jinja2/common.j2' as common %}
+
+{% set script_home = '/root/DBAScripts/backup' %}
+
+# 如果IO出现瓶颈，备份命令前使用：ionice -c2 -n7 nice -n19或者ionice -c3 nice -n19
+# 如果还是不可以，直接升级存储设备。
+##############################################################
+#def vars
+
+DBUSR='{{ common.db_back_username }}'
+DBPWD='{{ common.db_back_password }}'
+TABFILE='{{ script_home }}/tab.lst'
+MYCFGFILE='/etc/my.cnf'
+BACKUPDIR='{{ common.backup_home }}'
+DAY_BACKUPDIR="${BACKUPDIR}/$(date '+%Y%m%d%H')"
+SYS_DB="${BACKUPDIR}/sys_db.sql.$(date '+%Y%m%d%H')"
+
+#def functions
+F_GET_DBS () {
+mysql -N -u${DBUSR} -p${DBPWD} > /tmp/xtrabackup_dbs 2>/dev/null <<EOF
+show databases;
+EOF
+
+cat /tmp/xtrabackup_dbs
+}
+
+mkdir -p ${BACKUPDIR}
+mkdir -p ${DAY_BACKUPDIR}
+touch ${SYS_DB}
+##############################################################
+#execute backup
+
+# full backup(data & metadata)
+innobackupex --defaults-file=${MYCFGFILE} --user=${DBUSR} --password=${DBPWD} \
+${BACKUPDIR} > ${BACKUPDIR}/backup_log.$(date "+%Y%m%d%H") 2>&1
+
+# config backup
+cp ${MYCFGFILE} ${BACKUPDIR}/my.cnf.$(date "+%Y%m%d%H")
+service iptables status > ${BACKUPDIR}/iptables.$(date "+%Y%m%d%H") 2>&1
+firewall-cmd --list-all > ${BACKUPDIR}/firewall.$(date "+%Y%m%d%H") 2>&1
+crontab -l > ${BACKUPDIR}/crontab.$(date "+%Y%m%d%H") 2>&1
+
+# db metadata backup(mysql)
+mysqldump -f -u${DBUSR} -p${DBPWD} mysql > ${SYS_DB}
+
+# metadata backup(per db)
+F_GET_DBS | while read DB
+do
+
+mysqldump -f --databases -u${DBUSR} -p${DBPWD} ${DB} \
+> ${BACKUPDIR}/backup_structure.${DB}.$(date "+%Y%m%d%H") \
+2> ${BACKUPDIR}/backup_structure_log.${DB}.$(date "+%Y%m%d%H")
+
+done
+
+##############################################################
+#delete old backup pieces
+
+find {{ common.backup_home }}/* -mtime +1 -name "*" -exec rm -rf {} \;
