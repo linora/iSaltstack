@@ -1,11 +1,12 @@
 ########################################################################################
 # Ref: https://dev.mysql.com/doc/refman/5.6/en/server-system-variables.html
 
-{% set mysql_home = grains['mysql_home'] %}
-{% set server_id = grains['server_id'] %}
-{% set buffer_pool_ratio = grains['buffer_pool_ratio'] %}
-{% set mem_1024m_count = grains['mem_total']//1024 %}
-{% set large_pages = grains['large_pages'] %}
+{% set mem_1024m_count    = (grains['mem_total']/1024)|round(0, 'ceil') %}
+
+{% set mysql_home         = grains['mysql_home'] %}
+{% set server_id          = grains['server_id'] %}
+{% set buffer_pool_ratio  = grains['buffer_pool_ratio'] %}
+{% set large_pages        = grains['large_pages'] %}
 
 {% if mem_1024m_count == 0 %}
   {% set mem_total = 1024 %}

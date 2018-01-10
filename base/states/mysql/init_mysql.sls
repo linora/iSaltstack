@@ -1,10 +1,10 @@
 ################################################################################################
-# Title           :install_mysql.sls
+# Title           :init_mysql.sls
 # Description     :The script will install & startup & setup mysql.
 # Author	  :linora
 # Date            :2018/01/10
 # Version         :0.1
-# Usage	          :salt 'none' state.sls mysql.install_mysql
+# Usage	          :salt 'none' state.sls mysql.init_mysql
 # Notes           :Install saltstack master to use this script. 
 # Salt_version    :2017.7.2-1.el7
 ################################################################################################
@@ -17,6 +17,8 @@
 # 变量定义
 
 {% set mysql_home     = grains['mysql_home'] %}
+{% set mysql_version  = grains['mysql_version'] %}
+{% set os_family      = grains['os_family'] %}
 
 {% set mysql_pkgs_dir = '/tmp/mysql_db' %}
 
@@ -56,7 +58,11 @@ sync_user_table_{{ idx }}:
 # 3. 启动MySQL 
 start_mysql:
   cmd.run:
-    - name: 'service mysql start || service mysqld start'
+    - name: "groupmod -g 1001 mysql;
+             usermod  -u 1001 -g 1001 mysql;
+             service  mysql restart || service mysqld restart;
+             true     > {{ mysql_home }}/err.log;
+             service  mysql restart || service mysqld restart;"
     - timeout: 10
 
 
@@ -71,4 +77,5 @@ verify_MySQL_install:
   cmd.run:
   - name: "strings {{ mysql_home }}/data_dir/mysql/user.MYD;
            service mysql status || service mysqld status;
-           egrep -i '(error|fatal|warning)' {{ mysql_home }}/err.log"
+           egrep   -i '(error|fatal|warning)' {{ mysql_home }}/err.log |\
+           grep    -iv 'skip-name-resolve';"

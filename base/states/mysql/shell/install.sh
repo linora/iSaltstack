@@ -1,5 +1,22 @@
 #!/bin/bash
-
+################################################################################################
+# Title           :install.sh
+# Description     :The script will execute by init_mysql.sls in targe salt minion.
+# Author          :linora
+# Date            :2018/01/10
+# Version         :0.1
+# Usage	          :salt 'none' state.sls mysql.init_mysql
+# Notes           :Install saltstack master to use this script. 
+# Salt_version    :2017.7.2-1.el7
+################################################################################################
+# Action	    风险	    其他说明
+# 安装MySQL依赖包   无              
+# 卸载MySQL冲突包   无              
+# 清除MySQL相关文件 无
+# 安装MySQL包       无 
+# 重新初始化MySQL   无              重新初始化为/etc/my.cnf文件中目录结构（最佳实践），参数最优化
+# 停止MySQL         无
+################################################################################################
 # 禁用Debian系统交互式操作
 export DEBIAN_FRONTEND=noninteractive
 # mysql_home='/app/mysql'
