@@ -1,88 +1,74 @@
 ################################################################################################
-# Title           :setup_os4install.sls
-# Description     :The script will setup os before mysql install.
+# Title           :install_mysql.sls
+# Description     :The script will install & startup & setup mysql.
 # Author	  :linora
-# Date            :2018/01/09
+# Date            :2018/01/10
 # Version         :0.1
-# Usage	          :salt 'none' state.sls mysql.setup_os4install
+# Usage	          :salt 'none' state.sls mysql.install_mysql
 # Notes           :Install saltstack master to use this script. 
 # Salt_version    :2017.7.2-1.el7
 ################################################################################################
 # Action			风险		    其他说明
-# sysctl配置                    低              
-# limits.conf配置        	无
-# hugepages配置           	中                  配置hugepages时会预先抢占内存资源
+# 安装MySQL                     低              
+# 设置MySQL                 	中                  直接替换mysql.user表对应文件
+# 启动MySQL                     无
+# 验证安装                      无                  输出安装结果
 ################################################################################################
 # 变量定义
-{% set l_sysctl = [
-  ['vm.swappiness',                 '10'],
-  ['net.ipv4.tcp_max_syn_backlog',  '4096'],
-  ['fs.file-max',                   '6815744'],
-  ['fs.aio-max-nr',                 '1048576'],
-  ['kernel.shmmax',                 '18446744073692774399'],
-  ['kernel.shmall',                 '18446744073692774399'],
-  ['kernel.sem',                    '250 32000 100 128'],
-  ['net.ipv4.ip_local_port_range',  '1024 65000'],
-  ['net.core.rmem_default',         '262144'],
-  ['net.core.rmem_max',             '4194304'],
-  ['net.core.wmem_default',         '26214'],
-  ['net.core.wmem_max',             '1048576']
-]
-%}
 
-{% set if_use_large_page  = grains['large_pages'] %}
-{% set large_page_numbers = grains['huge_pages_number'] %}
-{% if if_use_large_page == 1 %}
-    {% set l_sysctl =  l_sysctl +
-                       [
-                         ['vm.nr_hugepages',       large_page_numbers],
-                         ['vm.hugetlb_shm_group',  '1001']
-		       ] 
-    %}
-{% endif %}
+{% set mysql_home     = grains['mysql_home'] %}
 
-{% set l_limits_conf = [
-  ['mysql  +soft +nproc +2047',                     'mysql              soft    nproc      2047'],
-  ['mysql  +hard +nproc +16384',                    'mysql              hard    nproc      16384'],
-  ['mysql  +soft +nofile +10240',                   'mysql              soft    nofile     10240'],
-  ['mysql  +hard +nofile +65536',                   'mysql              hard    nofile     65536'],
-  ['mysql  +soft +memlock +unlimited',              'mysql              soft    memlock    unlimited'],
-  ['mysql  +hard +memlock +unlimited',              'mysql              hard    memlock    unlimited']
-]
-%}
+{% set mysql_pkgs_dir = '/tmp/mysql_db' %}
 
 ################################################################################################
 # 程序主体
-# 1. sysctl配置 
+# 1. 安装MySQL
 
-{% for idx in l_sysctl: %}
-{{idx[0]}}:
-  sysctl.present:
-    - value: {{idx[1]}}
+install_mysql:
+  cmd.script:
+    - name: /tmp/install.sh
+    - source: salt://mysql/shell/install.sh
+    - runas: root
+    - shell: /bin/bash
+    - env:
+      - mysql_home: {{ mysql_home }}
+      - mysql_pkgs_dir: {{ mysql_pkgs_dir }} 
+
+
+# 2. 设置MySQL
+{% if mysql_version == 6 %}
+  {% set db_ver = '5.6.37' %}
+{% else %}
+  {% set db_ver = '5.7.20' %}
+{% endif %}
+
+{% for idx in ['frm','MYD','MYI']: %}
+sync_user_table_{{ idx }}:
+  file.managed:
+    - name: {{ mysql_home }}/data_dir/mysql/user.{{ idx }}
+    - source: 'salt://mysql/mysql_data/user.{{idx}}.{{db_ver}}'
+    - user: mysql
+    - group: mysql
+    - mode: 640
 {% endfor %}
 
 
-# 2. limits.conf配置
-{% for idx in l_limits_conf: %}
-{{idx[1]}}:
-  file.replace:
-    - name: "/etc/security/limits.conf"
-    - pattern: "{{idx[0]}}"
-    - repl: "{{idx[1]}}"
-    - append_if_not_found: True
-    - backup: '.bak'
-    - show_changes: True
-{% endfor%}
+# 3. 启动MySQL 
+start_mysql:
+  cmd.run:
+    - name: 'service mysql start || service mysqld start'
+    - timeout: 10
 
 
-# 3. hugepages配置
-{% if if_use_large_page == 1 %}
-disable_transparent_hugepage:
-  file.replace:
-    - name: "/etc/rc.local"
-    - pattern: "if.*test.*-f.*sys.*kernel.*mm.*transparent_hugepage.*enabled.*"
-    - repl: "if test -f /sys/kernel/mm/transparent_hugepage/enabled; then echo never > /sys/kernel/mm/transparent_hugepage/enabled; fi"
-    - append_if_not_found: True
-    - backup: '.bak'
-    - show_changes: True
+# 4. 验证安装
+{% if os_family == 'Debian' %}
+install_strings4Debian:
+  pkg.installed:
+    - name: binutils
 {% endif %}
+
+verify_MySQL_install:
+  cmd.run:
+  - name: "strings {{ mysql_home }}/data_dir/mysql/user.MYD;
+           service mysql status || service mysqld status;
+           egrep -i '(error|fatal|warning)' {{ mysql_home }}/err.log"

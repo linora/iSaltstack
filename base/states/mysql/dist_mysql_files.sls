@@ -14,7 +14,11 @@
 ################################################################################################
 # 变量定义
 
-{% set mysql_version = grains['mysql_version'] %}
+{% set mysql_version   = grains['mysql_version'] %}
+{% set osmajorrelease  = grains['osmajorrelease'] %}
+{% set os_family       = grains['os_family'] %}
+
+{% set pkg_home        = 'salt://resources/mysql/pkgs/' %}
 
 ################################################################################################
 # 程序主体
@@ -57,8 +61,20 @@ rm_mysql_db_dir:
 dist_my_tarball:
   module.run:
     - name: cp.get_file
-    - path: 'salt://resources/mysql/pkgs/mysql-server_5.6.37-1ubuntu14.04_amd64.deb-bundle.tar'
     - dest: /tmp/mysql_db/mysql.tar 
+    {% if osmajorrelease == 7      and mysql_version == 7 %}
+    - path: {{ pkg_home }}/mysql-5.7.20-1.el7.x86_64.rpm-bundle.tar
+    {% elif osmajorrelease == 7    and mysql_version == 6 %}
+    - path: {{ pkg_home }}/MySQL-5.6.37-1.el7.x86_64.rpm-bundle.tar
+    {% elif os_family == 'Debian'  and mysql_version == 7 %}
+    - path: {{ pkg_home }}/mysql-server_5.7.20-1ubuntu14.04_amd64.deb-bundle.tar
+    {% elif os_family == 'Debian'  and mysql_version == 6 %}
+    - path: {{ pkg_home }}/mysql-server_5.6.37-1ubuntu14.04_amd64.deb-bundle.tar
+    {% elif osmajorrelease == 6    and mysql_version == 7 %}
+    - path: {{ pkg_home }}/mysql-5.7.20-1.el6.x86_64.rpm-bundle.tar
+    {% else %}
+    - path: {{ pkg_home }}/MySQL-5.6.37-1.el6.x86_64.rpm-bundle.tar
+    {% endif %}
     - makedirs: True
     - require:
       - cmd: rm_mysql_db_dir
