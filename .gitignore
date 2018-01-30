@@ -1,1 +1,4 @@
 base/states/mysql/mysql_data/user.*
+
+base/states/stackstorm/packs/*
+!base/states/stackstorm/packs/salt_*
