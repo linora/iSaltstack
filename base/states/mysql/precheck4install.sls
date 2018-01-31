@@ -25,8 +25,8 @@
 # 程序主体
 # 1. 操作系统检查
 
-{% if (os_family == 'RedHat' and osarch == 'x86_64' and osmajorrelease in(6,7)) or
-      (os_family == 'Debian' and osarch == 'amd64'  and osmajorrelease in(14,))
+{% if (os_family == 'RedHat' and osarch == 'x86_64' and osmajorrelease + '' in('6','7')) or
+      (os_family == 'Debian' and osarch == 'amd64'  and osmajorrelease + '' in('14',))
       %}
 os_support_check:
   cmd.run:
@@ -34,7 +34,7 @@ os_support_check:
 {% else %}
 os_support_check:
   cmd.run:
-    - name: test 1 -eq 0 
+    - name: echo {{os_family}} {{osarch}} {{osmajorrelease}};test 1 -eq 0 
 {% endif %}
 
 

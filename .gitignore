@@ -1,4 +1,6 @@
+# 不同步数据库密码信息
 base/states/mysql/mysql_data/user.*
 
+# 不同步packs基础文件
 base/states/stackstorm/packs/*
 !base/states/stackstorm/packs/salt_*
