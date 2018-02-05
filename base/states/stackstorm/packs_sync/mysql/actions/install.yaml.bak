@@ -2,60 +2,55 @@
 name: "install"
 pack: "mysql"
 runner_type: "local-shell-script"
-description: "安装MySQL到目标服务器（sudo、timeout：1200）。"
+description: "Install mysql on the target hosts."
 enabled: true
 entry_point: "/opt/stackstorm/packs/mysql/actions/install.sh"
 parameters:
-    sudo:
-      default: true
-    timeout:
-      default: 1200
     target_host:
         type: "string"
-        description: "目标服务器（正则）。"
+        description: "salt regex for the target hosts."
         required: true
         default: "NoHostsGived"
         position: 0
     mysql_home:
         type: "string"
-        description: "MySQL数据文件目录。"
+        description: "mysql host path to install."
         required: true
         default: "/app/mysql"
         position: 1
     buffer_pool_ratio:
         type: "string"
-        description: "适用于MySQL 5.6：InnoDB buffer pool占总内存比例。"
+        description: "buffer pool ratio."
         required: false 
         default: "0.125"
         position: 2
     chunk_count:
         type: "integer"
-        description: "适用于MySQL 5.7：InnoDB buffer pool chunks数量（一个chunk大小为128M）。"
+        description: "mysql chunk count for mysql 5.7 and later."
         required: false 
         default: 2
         position: 3
     mysql_version:
         type: "integer"
-        description: "指定MySQL安装版本（6：5.6.37，7：5.7.20）。"
+        description: "mysql version."
         required: true
         default: 6
         position: 4
     server_id:
         type: "integer"
-        description: "MySQL 实例ID号。"
+        description: "server id for mysql."
         required: true
         default: 10010
         position: 5
     large_pages:
         type: "integer"
-        description: "是否启用huge pages（1：启用，0：禁用）。"
+        description: "if enable huge pages."
         required: true
         default: 0
         position: 6
     huge_pages_number:
         type: "integer"
-        description: "Huge pages页数（一个huge page大小为2MB）。"
+        description: "huge pages number."
         required: false 
         default: 256
         position: 7
-
