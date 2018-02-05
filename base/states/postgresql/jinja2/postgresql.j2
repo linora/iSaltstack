@@ -2,12 +2,19 @@
 # 参考: https://www.postgresql.org/docs/10/static/runtime-config.html 
 # 基本原则：尽量只设置静态参数（部分重要动态参数）
 
-{% set pg_home            = grains['pg_home'] %}
-{% set mem_1024m_count    = (grains['mem_total']/4)|round(0, 'floor') %}
+{% set pg_data                  = grains['pg_data'] %}
+{% set buffer_pool_ratio        = grains['pg_buffer_pool_ratio'] %}
+
+{% set mem_1024m_count          = ( (grains['mem_total']/1024) | round(0, 'floor') ) | int %}
+{% set mem_4m_count             = ( (grains['mem_total']/4)    | round(0, 'floor')   ) | int %}
+
+{% set shared_buffers_mbs       = ( (mem_4m_count * buffer_pool_ratio) | round(0, 'floor') * 4 ) | int %}
+{% set maintenance_work_mem_mbs = ( (mem_4m_count * 0.05)              | round(0, 'floor') * 4 ) | int %}
+
 
 ########################################################################################
 # 基本参数
-archive_command = 'cp %p {{pg_home}}/archive_logs/%f'
+archive_command = 'cp %p {{pg_data}}/archive_logs/%f'
 archive_mode = always
 archive_timeout = 0
 bgwriter_delay = 10ms
@@ -43,7 +50,7 @@ log_statement = 'ddl'
 log_timezone = 'PRC'
 log_truncate_on_rotation = on
 logging_collector = on
-maintenance_work_mem = {{maintenance_work_mem_mbs}}
+maintenance_work_mem = {{maintenance_work_mem_mbs}}MB
 max_connections = 800
 max_files_per_process = 1000
 max_locks_per_transaction = 520
@@ -53,13 +60,13 @@ max_wal_senders = 10
 max_wal_size = 1GB
 max_worker_processes = 10
 min_wal_size = 80MB
-shared_buffers = {{shared_buffers_mbs}}
+shared_buffers = {{shared_buffers_mbs}}MB
 superuser_reserved_connections = 3
 tcp_keepalives_count = 10
 tcp_keepalives_idle = 60
 tcp_keepalives_interval = 10
 temp_buffers = 8MB
-TimeZone = PRC
+timezone = PRC
 vacuum_cost_delay = 10ms
 vacuum_cost_limit = 10000
 wal_buffers = 32MB

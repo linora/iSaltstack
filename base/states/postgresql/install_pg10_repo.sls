@@ -9,34 +9,26 @@
 # Salt_version    :2017.7.2-1.el7
 ################################################################################################
 # Action			风险		    其他说明
-# postgresql.conf分发           无            
-# pg_hba.conf分发               无
+# postgresql.conf分发           无                  debug 用 
 # pg10 yum reposity install     无
+# pg_hba.conf分发               无                  debug 用
 ################################################################################################
 # 变量定义
 
-{% set osmajorrelease  = grains['osmajorrelease'] %}
+{% set os              = grains['os'] %}
 {% set os_family       = grains['os_family'] %}
+{% set osmajorrelease  = grains['osmajorrelease'] | int %}
+{% set osarch          = grains['osarch'] %}
 
 ################################################################################################
 # 程序主体
-# 1. my.cnf分发
+# 1. postgresql.conf分发
 
-{% if   mysql_version == 6 %}
-dist_my_cnf:
+{% if os_family == 'RedHat' and osmajorrelease in(6,7) and osarch == 'x86_64' %}
+dist_postgresql_conf:
   file.managed:
-    - name: /tmp/my.cnf
-    - source: salt://mysql/jinja2/my56_cnf.j2
-    - user: root
-    - group: root
-    - mode: 640
-    - template: jinja
-    - replace: True
-{% elif mysql_version == 7 %}
-dist_my_cnf:
-  file.managed:
-    - name: /tmp/my.cnf
-    - source: salt://mysql/jinja2/my56_cnf.j2
+    - name: /tmp/postgresql.conf
+    - source: salt://postgresql/jinja2/postgresql.j2
     - user: root
     - group: root
     - mode: 640
@@ -49,30 +41,31 @@ not_support_version:
 {% endif %}
 
 
-# 2. mysql tar ball分发
-rm_mysql_db_dir:
+# 2. postgresql 10 yum reposity安装
+install_postgresql10_yum_reposity:
   cmd.run:
-    - name: rm -rf /tmp/mysql_db
-    - require:
-      - file: dist_my_cnf
-
-dist_my_tarball:
-  module.run:
-    - name: cp.get_file
-    - dest: /tmp/mysql_db/mysql.tar 
-    {% if osmajorrelease == 7      and mysql_version == 7 %}
-    - path: {{ pkg_home }}/mysql-5.7.20-1.el7.x86_64.rpm-bundle.tar
-    {% elif osmajorrelease == 7    and mysql_version == 6 %}
-    - path: {{ pkg_home }}/MySQL-5.6.37-1.el7.x86_64.rpm-bundle.tar
-    {% elif os_family == 'Debian'  and mysql_version == 7 %}
-    - path: {{ pkg_home }}/mysql-server_5.7.20-1ubuntu14.04_amd64.deb-bundle.tar
-    {% elif os_family == 'Debian'  and mysql_version == 6 %}
-    - path: {{ pkg_home }}/mysql-server_5.6.37-1ubuntu14.04_amd64.deb-bundle.tar
-    {% elif osmajorrelease == 6    and mysql_version == 7 %}
-    - path: {{ pkg_home }}/mysql-5.7.20-1.el6.x86_64.rpm-bundle.tar
+    {% if   os == 'CentOS' and osmajorrelease == 7 %}
+    - name: "yum install https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-centos10-10-1.noarch.rpm"
+    {% elif os == 'CentOS' and osmajorrelease == 6 %}
+    - name: "yum install https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-6-x86_64/pgdg-centos10-10-1.noarch.rpm"
+    {% elif os == 'RedHat' and osmajorrelease == 7 %}
+    - name: "yum install https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-redhat10-10-1.noarch.rpm"
     {% else %}
-    - path: {{ pkg_home }}/MySQL-5.6.37-1.el6.x86_64.rpm-bundle.tar
+    - name: "yum install https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-6-x86_64/pgdg-redhat10-10-1.noarch.rpm"
     {% endif %}
-    - makedirs: True
     - require:
-      - cmd: rm_mysql_db_dir
+      - file: dist_postgresql_conf
+
+
+# 3. pg_hba.conf分发
+dist_pg_hba_conf:
+  file.managed:
+    - name: /tmp/pg_hba.conf
+    - source: salt://postgresql/jinja2/pg_hba.j2
+    - user: root
+    - group: root
+    - mode: 640
+    - template: jinja
+    - replace: True
+    - require:
+      - file: dist_postgresql_conf

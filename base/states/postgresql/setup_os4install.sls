@@ -1,10 +1,10 @@
 ################################################################################################
 # Title           :setup_os4install.sls
-# Description     :The script will setup os before mysql install.
+# Description     :The script will setup os before postgresql install.
 # Author	  :linora
-# Date            :2018/01/09
+# Date            :2018/02/05
 # Version         :0.1
-# Usage	          :salt 'none' state.sls mysql.setup_os4install
+# Usage	          :salt 'none' state.sls postgresql.setup_os4install
 # Notes           :Install saltstack master to use this script. 
 # Salt_version    :2017.7.2-1.el7
 ################################################################################################
@@ -36,18 +36,18 @@
     {% set l_sysctl =  l_sysctl +
                        [
                          ['vm.nr_hugepages',       large_page_numbers],
-                         ['vm.hugetlb_shm_group',  '1001']
+                         ['vm.hugetlb_shm_group',  '1003']
 		       ] 
     %}
 {% endif %}
 
 {% set l_limits_conf = [
-  ['mysql  +soft +nproc +2047',                     'mysql              soft    nproc      2047'],
-  ['mysql  +hard +nproc +16384',                    'mysql              hard    nproc      16384'],
-  ['mysql  +soft +nofile +10240',                   'mysql              soft    nofile     10240'],
-  ['mysql  +hard +nofile +65536',                   'mysql              hard    nofile     65536'],
-  ['mysql  +soft +memlock +unlimited',              'mysql              soft    memlock    unlimited'],
-  ['mysql  +hard +memlock +unlimited',              'mysql              hard    memlock    unlimited']
+  ['postgres  +soft +nproc +2047',                     'postgres              soft    nproc      2047'],
+  ['postgres  +hard +nproc +16384',                    'postgres              hard    nproc      16384'],
+  ['postgres  +soft +nofile +10240',                   'postgres              soft    nofile     10240'],
+  ['postgres  +hard +nofile +65536',                   'postgres              hard    nofile     65536'],
+  ['postgres  +soft +memlock +unlimited',              'postgres              soft    memlock    unlimited'],
+  ['postgres  +hard +memlock +unlimited',              'postgres              hard    memlock    unlimited']
 ]
 %}
 

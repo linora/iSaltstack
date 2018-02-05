@@ -1,42 +1,42 @@
 include:
   # 预检查
-  - mysql.precheck4install
+  - postgresql.precheck4install
   # 设置OS最优化
-  - mysql.setup_os4install
-  # 分发MySQL安装文件
-  - mysql.dist_mysql_files
+  - postgresql.setup_os4install
+  # 安装postgresql 10 yum reposity
+  - postgresql.install_pg10_repo
   # 初始化MySQL
-  - mysql.init_mysql
+  - postgresql.init_postgresql
 
 extend:
   #####################################################################
-  # dist_mysql_files
-  dist_my_tarball:
-    module.run:
+  # setup_os4install
+  {% if grains['large_pages'] == 1 %}
+  vm.hugetlb_shm_group:
+    sysctl.present:
       - require:
-        - cmd: rm_mysql_db_dir
-        # precheck4install
-        - file: if_exists_mysql_home 
+        - cmd: if_mysqld_running
+  {% endif %}
   #####################################################################
-  # init_mysql
-  install_mysql:
+  # init_postgresql
+  install_postgresql:
     cmd.script:
       - require:
-        # dist_mysql_files
-        - dist_my_tarball
-  sync_user_table_frm:
+        # precheck4install
+        - if_exists_postgresql_data_home
+  sync_pg_hba_conf:
     file.managed:
       - require:
         # precheck4install
-        - file: if_exists_mysql_home
-  sync_user_table_MYI:
+        - if_exists_postgresql_data_home
+  sync_postgresql_conf:
     file.managed:
       - require:
         # precheck4install
-        - file: if_exists_mysql_home
-  sync_user_table_MYD:
-    file.managed:
+        - if_exists_postgresql_data_home
+  start_postgresql:
+    cmd.run:
       - require:
         # precheck4install
-        - file: if_exists_mysql_home
+        - if_exists_postgresql_data_home
   #####################################################################

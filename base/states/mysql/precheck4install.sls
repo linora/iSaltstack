@@ -23,6 +23,12 @@
 
 ################################################################################################
 # 程序主体
+if_postmaster_running:
+  cmd.run:
+    - name: "test $(ps -ef | grep -i postmaster | grep -v grep | wc -l) -eq 0 || \
+             (echo '存在运行中的postgresql进程，请手动检查vm.hugetlb_shm_group设置！' ; false)"
+
+
 # 1. 操作系统检查
 
 {% if ( os_family == 'RedHat' and osarch == 'x86_64' and osmajorrelease in(6,7) ) or
@@ -31,6 +37,8 @@
 os_support_check:
   cmd.run:
     - name: test 1 -eq 1
+    - require:
+      - cmd: if_postmaster_running
 {% else %}
 os_support_check:
   cmd.run:
