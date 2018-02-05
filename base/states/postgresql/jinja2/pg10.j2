@@ -1,0 +1,70 @@
+########################################################################################
+# 参考: https://www.postgresql.org/docs/10/static/runtime-config.html 
+# 基本原则：尽量只设置静态参数（部分重要动态参数）
+
+{% set pg_home            = grains['pg_home'] %}
+{% set mem_1024m_count    = (grains['mem_total']/4)|round(0, 'floor') %}
+
+########################################################################################
+# 基本参数
+archive_command = 'cp %p {{pg_home}}/archive_logs/%f'
+archive_mode = always
+archive_timeout = 0
+bgwriter_delay = 10ms
+client_encoding = UTF8
+constraint_exclusion = partition
+datestyle = 'iso, mdy'
+deadlock_timeout = 1s
+default_text_search_config = 'pg_catalog.english'
+dynamic_shared_memory_type = posix
+effective_cache_size = {{mem_1024m_count}}GB
+hot_standby = on
+hot_standby_feedback = on
+huge_pages = try
+lc_messages = 'en_US.UTF-8'
+lc_monetary = 'en_US.UTF-8'
+lc_numeric = 'en_US.UTF-8'
+lc_time = 'en_US.UTF-8'
+listen_addresses = '*'
+log_autovacuum_min_duration = 0
+log_checkpoints = on
+log_connections = on
+log_destination = 'csvlog'
+log_directory = 'pg_log'
+log_disconnections = on
+log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log'
+log_line_prefix = '%a %u %d %h %t %i %e'
+log_min_duration_statement = 5s
+log_min_error_statement = error
+log_min_messages = warning
+log_rotation_age = 1d
+log_rotation_size = 10240
+log_statement = 'ddl'
+log_timezone = 'PRC'
+log_truncate_on_rotation = on
+logging_collector = on
+maintenance_work_mem = {{maintenance_work_mem_mbs}}
+max_connections = 800
+max_files_per_process = 1000
+max_locks_per_transaction = 520
+max_standby_archive_delay = 120s
+max_standby_streaming_delay = 120s
+max_wal_senders = 10
+max_wal_size = 1GB
+max_worker_processes = 10
+min_wal_size = 80MB
+shared_buffers = {{shared_buffers_mbs}}
+superuser_reserved_connections = 3
+tcp_keepalives_count = 10
+tcp_keepalives_idle = 60
+tcp_keepalives_interval = 10
+temp_buffers = 8MB
+TimeZone = PRC
+vacuum_cost_delay = 10ms
+vacuum_cost_limit = 10000
+wal_buffers = 32MB
+wal_keep_segments = 32
+wal_level = hot_standby
+wal_receiver_timeout = 5min
+wal_writer_delay = 10ms
+work_mem = 4MB
