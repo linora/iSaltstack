@@ -1,5 +1,4 @@
 #!/bin/bash
-
 :<<CMMT
 # st2ctl status
 ##### st2 components status #####
