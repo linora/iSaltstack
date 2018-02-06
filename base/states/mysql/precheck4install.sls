@@ -1,23 +1,23 @@
 ################################################################################################
 # Title           :precheck4install.sls
-# Description     :The script will pre check before mysql install.
-# Author	  :linora
+# Description     :The script will pre check requirements before mysql install.
+# Author	      :linora
 # Date            :2018/01/09
 # Version         :0.1
 # Usage	          :salt 'none' state.sls mysql.precheck4install
 # Notes           :Install saltstack master to use this script. 
 # Salt_version    :2017.7.2-1.el7
 ################################################################################################
-# Action			风险		    其他说明
-# 操作系统检查			无
+# Action			            风险		    其他说明
+# 操作系统检查			        无
 # 是否存在运行中的mysqld进程	无
-# 是否存在已安装的MySQL包	无
+# 是否存在已安装的MySQL包	    无
 # MySQL安装目录是否挂载         无
 ################################################################################################
 # 变量定义
 {% set os_family        = grains['os_family'] %}
-{% set osarch           = grains['osarch'] %}
 {% set osmajorrelease   = grains['osmajorrelease'] | int %}
+{% set osarch           = grains['osarch'] %}
 
 {% set mysql_home       = grains['mysql_home'] %}
 
@@ -71,4 +71,4 @@ if_exists_mysql_home:
   file.exists:
   - name: '{{mysql_home}}'
   - require:
-    - cmd: if_installed_mysql 
+    - cmd: if_installed_mysql

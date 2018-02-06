@@ -1,15 +1,15 @@
 ################################################################################################
 # Title           :setup_os4install.sls
 # Description     :The script will setup os before mysql install.
-# Author	  :linora
+# Author	      :linora
 # Date            :2018/01/09
 # Version         :0.1
 # Usage	          :salt 'none' state.sls mysql.setup_os4install
 # Notes           :Install saltstack master to use this script. 
 # Salt_version    :2017.7.2-1.el7
 ################################################################################################
-# Action			风险		    其他说明
-# sysctl配置                    低              
+# Action			        风险		        其他说明
+# sysctl配置                低
 # limits.conf配置        	无
 # hugepages配置           	中                  配置hugepages时会预先抢占内存资源
 ################################################################################################

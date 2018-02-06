@@ -1,22 +1,22 @@
 ################################################################################################
 # Title           :dist_mysql_files.sls
-# Description     :The script will distribution mysql install require files before mysql install.
-# Author	  :linora
+# Description     :The script will distribution require files before mysql install.
+# Author	      :linora
 # Date            :2018/01/09
 # Version         :0.1
 # Usage	          :salt 'none' state.sls mysql.dist_mysql_files
 # Notes           :Install saltstack master to use this script. 
 # Salt_version    :2017.7.2-1.el7
 ################################################################################################
-# Action			风险		    其他说明
+# Action			            风险		    其他说明
 # my.cnf分发                    无            
 # mysql tar ball分发            无
 ################################################################################################
 # 变量定义
 
 {% set mysql_version   = grains['mysql_version'] %}
-{% set osmajorrelease  = grains['osmajorrelease'] %}
 {% set os_family       = grains['os_family'] %}
+{% set osmajorrelease  = grains['osmajorrelease'] %}
 
 {% set pkg_home        = 'salt://resources/mysql/pkgs/' %}
 

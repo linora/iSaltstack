@@ -1,14 +1,14 @@
 ################################################################################################
 # Title           :init_mysql.sls
 # Description     :The script will install & startup & setup mysql.
-# Author	  :linora
+# Author	      :linora
 # Date            :2018/01/10
 # Version         :0.1
 # Usage	          :salt 'none' state.sls mysql.init_mysql
 # Notes           :Install saltstack master to use this script. 
 # Salt_version    :2017.7.2-1.el7
 ################################################################################################
-# Action			风险		    其他说明
+# Action			            风险		        其他说明
 # 安装MySQL                     低              
 # 设置MySQL                 	中                  直接替换mysql.user表对应文件
 # 启动MySQL                     无
@@ -16,9 +16,9 @@
 ################################################################################################
 # 变量定义
 
+{% set os_family      = grains['os_family'] %}
 {% set mysql_home     = grains['mysql_home'] %}
 {% set mysql_version  = grains['mysql_version'] %}
-{% set os_family      = grains['os_family'] %}
 
 {% set mysql_pkgs_dir = '/tmp/mysql_db' %}
 
