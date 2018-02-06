@@ -1,19 +1,12 @@
 ########################################################################################
-# Ref: https://dev.mysql.com/doc/refman/5.6/en/server-system-variables.html
-
-{% set mem_1024m_count    = (grains['mem_total']/1024)|round(0, 'ceil') %}
-
+# 参考: https://dev.mysql.com/doc/refman/5.6/en/server-system-variables.html
+# 基本原则：尽量只设置静态参数（部分重要动态参数）
 {% set mysql_home         = grains['mysql_home'] %}
 {% set server_id          = grains['server_id'] %}
-{% set buffer_pool_ratio  = grains['buffer_pool_ratio'] %}
+{% set chunk_count        = grains['chunk_count'] %}
 {% set large_pages        = grains['large_pages'] %}
 
-{% if mem_1024m_count == 0 %}
-  {% set mem_total = 1024 %}
-{% else %}
-  {% set mem_total = 1024 * mem_1024m_count %}
-{% endif %}
-
+{% set buffer_pool_mbs    = (chunk_count * 128) | int  %}
 ########################################################################################
 ########################################################################################
 ########################################################################################
@@ -60,7 +53,7 @@ log_error='{{ mysql_home }}/err.log'
 ########################################################################################
 # mem 
 
-innodb_buffer_pool_size={{ (mem_total * buffer_pool_ratio)//1 }}M
+innodb_buffer_pool_size={{ buffer_pool_mbs }}M
 innodb_buffer_pool_instances=2
 innodb_page_size=16K
 
@@ -74,23 +67,18 @@ innodb_open_files=2000
 ########################################################################################
 # network 
 
-
 bind_address='*'
-
-
-back_log=100
 
 skip_name_resolve=1
 
 ########################################################################################
-# sec 
+# sec
 
 disconnect_on_expired_password=0
 max_connect_errors=50
 
 ########################################################################################
-#  
-
+#
 innodb_autoinc_lock_mode=1
 
 innodb_purge_threads=8

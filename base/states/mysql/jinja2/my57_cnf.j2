@@ -1,12 +1,12 @@
 ########################################################################################
 # 参考: https://dev.mysql.com/doc/refman/5.7/en/server-system-variables.html
 # 基本原则：尽量只设置静态参数（部分重要动态参数）
+{% set mysql_home         = grains['mysql_home'] %}
+{% set server_id          = grains['server_id'] %}
+{% set chunk_count        = grains['chunk_count'] %}
+{% set large_pages        = grains['large_pages'] %}
 
-{% set mysql_home  = grains['mysql_home'] %}
-{% set chunk_count = grains['chunk_count'] %}
-{% set server_id   = grains['server_id'] %}
-{% set large_pages = grains['large_pages'] %}
-
+{% set buffer_pool_mbs    = (chunk_count * 128) | int  %}
 ########################################################################################
 ########################################################################################
 ########################################################################################
@@ -69,9 +69,6 @@ innodb_open_files=2000
 # 监听地址
 bind_address='*'
 
-# 应对连接风暴时队列大小
-back_log=100
-
 skip_name_resolve=1
 
 ########################################################################################
@@ -109,7 +106,7 @@ innodb_page_cleaners=8
 innodb_adaptive_hash_index_parts=16
 
 # 最佳设置：innodb_buffer_pool_chunk_size * innodb_buffer_pool_instances
-innodb_buffer_pool_size = {{ 128 * chunk_count }}M
+innodb_buffer_pool_size = {{ buffer_pool_mbs }}M
 
 ########################################################################################
 ########################################################################################

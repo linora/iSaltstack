@@ -1,7 +1,7 @@
 #!/bin/bash
 ################################################################################################
 # Title           :install.sh
-# Description     :The script will execute by init_mysql.sls in targe salt minion.
+# Description     :The script will execute by init_mysql.sls in target servers.
 # Author          :linora
 # Date            :2018/01/10
 # Version         :0.1
@@ -9,7 +9,7 @@
 # Notes           :Install saltstack master to use this script. 
 # Salt_version    :2017.7.2-1.el7
 ################################################################################################
-# Action	    风险	    其他说明
+# Action	        风险	        其他说明
 # 安装MySQL依赖包   无              
 # 卸载MySQL冲突包   无              
 # 清除MySQL相关文件 无
@@ -19,8 +19,9 @@
 ################################################################################################
 # 禁用Debian系统交互式操作
 export DEBIAN_FRONTEND=noninteractive
-# mysql_home='/app/mysql'
-# mysql_pkgs_dir='/tmp/mysql_db'
+
+mysql_home="${mysql_home}"
+mysql_pkgs_dir="${mysql_pkgs_dir}"
 
 
 # 函数：居中显示信息
@@ -65,7 +66,7 @@ chown -R mysql:mysql $mysql_home/
 
 myPrint    'Reconfigure my.cnf:'
 \cp -f /tmp/my.cnf /etc/my.cnf
-sed -i '/innodb_buffer_pool_size/s/.0M/M/g' /etc/my.cnf
+# sed -i '/innodb_buffer_pool_size/s/.0M/M/g' /etc/my.cnf
 
 myPrint    'Init MySQL db:'
 rm -rf /etc/mysql
