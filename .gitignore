@@ -4,3 +4,6 @@ base/states/mysql/mysql_data/user.*
 # 不同步packs基础文件
 base/states/stackstorm/packs/*
 !base/states/stackstorm/packs/salt_*
+
+# 不同步安装包
+base/states/resources/mysql/pkgs/*
