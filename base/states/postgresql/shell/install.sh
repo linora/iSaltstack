@@ -52,4 +52,3 @@ systemctl enable postgresql-10 ||\
 chkconfig postgresql-10 on
 service postgresql-10 restart
 service postgresql-10 stop 
- 
