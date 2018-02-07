@@ -6,7 +6,7 @@
 # Version         :0.1
 # Usage	          :salt 'none' state.sls postgresql.init_postgresql
 # Notes           :Install saltstack master to use this script. 
-# Salt_version    :2017.7.2-1.el7
+# Salt_version    :2017.7.3-1.el7
 ################################################################################################
 # Action			            风险		        其他说明
 # 安装postgresql                低              
