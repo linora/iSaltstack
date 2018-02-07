@@ -7,3 +7,6 @@ base/states/stackstorm/packs/*
 
 # 不同步MySQL安装包
 base/states/resources/mysql/pkgs/*
+
+# 不同步pycharm元数据
+.idea/*
