@@ -29,7 +29,7 @@ top.sls：             init.sls
 1. MySQL安装
 
 # 目标服务器（正则）
-TARGET_HOST='master'
+TARGET_HOST='none'
 
 # 配置config/install.init参数
 

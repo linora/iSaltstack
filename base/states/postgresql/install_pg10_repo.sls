@@ -1,25 +1,23 @@
 ################################################################################################
 # Title           :install_pg10_repo.sls
 # Description     :The script will install pg10 reposity.
-# Author	  :linora
+# Author	      :linora
 # Date            :2018/02/01
 # Version         :0.1
 # Usage	          :salt 'none' state.sls postgresql.install_pg10_repo
 # Notes           :Install saltstack master to use this script. 
 # Salt_version    :2017.7.2-1.el7
 ################################################################################################
-# Action			风险		    其他说明
+# Action			            风险		        其他说明
 # postgresql.conf分发           无                  debug 用 
 # pg10 yum reposity install     无
 # pg_hba.conf分发               无                  debug 用
 ################################################################################################
 # 变量定义
-
 {% set os              = grains['os'] %}
 {% set os_family       = grains['os_family'] %}
 {% set osmajorrelease  = grains['osmajorrelease'] | int %}
 {% set osarch          = grains['osarch'] %}
-
 ################################################################################################
 # 程序主体
 # 1. postgresql.conf分发

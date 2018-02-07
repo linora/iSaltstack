@@ -5,13 +5,11 @@
 {% set pg_data                  = grains['pg_data'] %}
 {% set buffer_pool_ratio        = grains['pg_buffer_pool_ratio'] %}
 
-{% set mem_1024m_count          = ( (grains['mem_total']/1024) | round(0, 'floor') ) | int %}
-{% set mem_4m_count             = ( (grains['mem_total']/4)    | round(0, 'floor')   ) | int %}
+{% set mem_1024m_count          = ( (grains['mem_total']/1024) | round(0, 'floor')   )   | int %}
+{% set mem_4m_count             = ( (grains['mem_total']/4)    | round(0, 'floor')   )   | int %}
 
 {% set shared_buffers_mbs       = ( (mem_4m_count * buffer_pool_ratio) | round(0, 'floor') * 4 ) | int %}
 {% set maintenance_work_mem_mbs = ( (mem_4m_count * 0.05)              | round(0, 'floor') * 4 ) | int %}
-
-
 ########################################################################################
 # 基本参数
 archive_command = 'cp %p {{pg_data}}/archive_logs/%f'

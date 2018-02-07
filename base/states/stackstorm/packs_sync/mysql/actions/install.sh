@@ -11,8 +11,7 @@ HUGE_PAGES_NUMBER=$8
 
 salt "${TARGET_HOST}" grains.setvals "{
   'mysql_home':          '${MYSQL_HOME}',              # mysql安装目录
-  'buffer_pool_ratio':   ${BUFFER_POOL_RATIO},         # InnoDB buffer pool 占用内存大小
-  'chunk_count':         ${CHUNK_COUNT},               # InnoDB buffer pool chunck count(一个chunck大小为128M，适用于5.7+)
+  'chunk_count':         ${CHUNK_COUNT},               # InnoDB buffer pool chunck count(一个chunck大小为128M)
   'mysql_version':       ${MYSQL_VERSION},             # MySQL 版本选择（6: 5.6.37  7: 5.7.20）
   'server_id':           ${SERVER_ID},                 # 服务器ID
   'large_pages':         ${LARGE_PAGES},               # 是否启用hugepage（1：启用  2： 禁用）

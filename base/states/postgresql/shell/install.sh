@@ -9,7 +9,7 @@
 # Notes           :Install saltstack master to use this script. 
 # Salt_version    :2017.7.2-1.el7
 ################################################################################################
-# Action	    风险	    其他说明
+# Action	        风险	        其他说明
 # 卸载PG冲突包      无              
 # 安装PG10          无 
 # 初始化PG10        无              重新初始化为postgresql.conf文件中目录结构（最佳实践），参数最优化
@@ -34,12 +34,12 @@ rpm -qa    | grep -i ^postgresql | xargs rpm -e --nodeps
 
 myPrint    'Install PG10 PKGs:'
 yum        -y install postgresql10 \
-                   postgresql10-server \
-                   postgresql10-client \
-                   postgresql10-contrib \
-                   postgresql10-devel
+                      postgresql10-server \
+                      postgresql10-client \
+                      postgresql10-contrib \
+                      postgresql10-devel
 
-myPrint    'Init PG data to pg_data home:'
+myPrint    'Init PG to pg_data home:'
 chown      postgres:postgres ${PG_DATA}
 su         - postgres -c '/usr/pgsql-10/bin/initdb -D /app/postgresql'
 
@@ -50,5 +50,7 @@ sed        -i "s|PGDATA=/var/lib/pgsql/10/data/|PGDATA=${PG_DATA}/|" \
 systemctl daemon-reload
 systemctl enable postgresql-10 ||\
 chkconfig postgresql-10 on
+mkdir ${PG_DATA}/archive_logs && \
+chown postgres:postgres ${PG_DATA}/archive_logs
 service postgresql-10 restart
-service postgresql-10 stop 
+service postgresql-10 stop

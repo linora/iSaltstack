@@ -2,7 +2,7 @@
 name: "install"
 pack: "mysql"
 runner_type: "local-shell-script"
-description: "安装MySQL到目标服务器（sudo、timeout：1200）。"
+description: "安装MySQL到目标服务器（sudo：true、timeout：1200）。"
 enabled: true
 entry_point: "/opt/stackstorm/packs/mysql/actions/install.sh"
 parameters:
