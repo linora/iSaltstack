@@ -43,13 +43,13 @@ not_support_version:
 install_postgresql10_yum_reposity:
   cmd.run:
     {% if   os == 'CentOS' and osmajorrelease == 7 %}
-    - name: "yum install https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-centos10-10-1.noarch.rpm"
+    - name: "yum install -y https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-centos10-10-1.noarch.rpm"
     {% elif os == 'CentOS' and osmajorrelease == 6 %}
-    - name: "yum install https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-6-x86_64/pgdg-centos10-10-1.noarch.rpm"
+    - name: "yum install -y https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-6-x86_64/pgdg-centos10-10-1.noarch.rpm"
     {% elif os == 'RedHat' and osmajorrelease == 7 %}
-    - name: "yum install https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-redhat10-10-1.noarch.rpm"
+    - name: "yum install -y https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-redhat10-10-1.noarch.rpm"
     {% else %}
-    - name: "yum install https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-6-x86_64/pgdg-redhat10-10-1.noarch.rpm"
+    - name: "yum install -y https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-6-x86_64/pgdg-redhat10-10-1.noarch.rpm"
     {% endif %}
     - require:
       - file: dist_postgresql_conf

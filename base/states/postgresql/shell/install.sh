@@ -16,7 +16,7 @@
 ################################################################################################
 # 变量定义
 
-export PG_DATA="${PG_DATA}"
+export PG_DATA="/app/postgresql"
 
 
 # 函数：居中显示信息
@@ -41,16 +41,22 @@ yum        -y install postgresql10 \
 
 myPrint    'Init PG to pg_data home:'
 chown      postgres:postgres ${PG_DATA}
-su         - postgres -c '/usr/pgsql-10/bin/initdb -D /app/postgresql'
+su         - postgres -c "/usr/pgsql-10/bin/initdb -D ${PG_DATA}"
 
 
 myPrint    'Start postgresql & setup AutoBoot on:'
 sed        -i "s|PGDATA=/var/lib/pgsql/10/data/|PGDATA=${PG_DATA}/|" \
-/usr/lib/systemd/system/postgresql-10.service
+/usr/lib/systemd/system/postgresql-10.service ||
+(
+  sed -i s#PGDATA=/var/lib/pgsql/10/data#PGDATA=/app/postgresql#g /etc/init.d/postgresql-10;
+  sed -i s#PGLOG=/var/lib/pgsql/10/pgstartup.log#PGLOG=/app/postgresql/pgstartup.log#g /etc/init.d/postgresql-10;
+  sed -i s#PGUPLOG=/var/lib/pgsql/.*/pgupgrade.log#PGUPLOG=/app/postgresql/pgupgrade.log#g /etc/init.d/postgresql-10
+)
 systemctl daemon-reload
 systemctl enable postgresql-10 ||\
 chkconfig postgresql-10 on
 mkdir ${PG_DATA}/archive_logs && \
-chown postgres:postgres ${PG_DATA}/archive_logs
+chown postgres:postgres ${PG_DATA}
+chown -R postgres:postgres /var/run/postgresql
 service postgresql-10 restart
 service postgresql-10 stop
