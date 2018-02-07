@@ -38,7 +38,7 @@ dist_my_cnf:
 dist_my_cnf:
   file.managed:
     - name: /tmp/my.cnf
-    - source: salt://mysql/jinja2/my56_cnf.j2
+    - source: salt://mysql/jinja2/my57_cnf.j2
     - user: root
     - group: root
     - mode: 640
