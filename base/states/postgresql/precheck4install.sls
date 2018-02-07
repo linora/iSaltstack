@@ -1,15 +1,15 @@
 ################################################################################################
 # Title           :precheck4install.sls
 # Description     :The script will pre check before postgresql install.
-# Author	  :linora
+# Author	      :linora
 # Date            :2018/02/05
 # Version         :0.1
 # Usage	          :salt 'none' state.sls postgresql.precheck4install
 # Notes           :Install saltstack master to use this script. 
-# Salt_version    :2017.7.2-1.el7
+# Salt_version    :2017.7.3-1.el7
 ################################################################################################
-# Action			    风险		    其他说明
-# 操作系统检查			    无
+# Action			                风险		    其他说明
+# 操作系统检查			            无
 # 是否存在运行中的postgresql进程    无
 # 是否存在已安装的postgresql包	    无
 # postgresql安装目录是否挂载        无

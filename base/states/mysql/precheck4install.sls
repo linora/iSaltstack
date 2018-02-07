@@ -6,7 +6,7 @@
 # Version         :0.1
 # Usage	          :salt 'none' state.sls mysql.precheck4install
 # Notes           :Install saltstack master to use this script. 
-# Salt_version    :2017.7.2-1.el7
+# Salt_version    :2017.7.3-1.el7
 ################################################################################################
 # Action			            风险		    其他说明
 # 操作系统检查			        无
@@ -26,13 +26,13 @@
 if_postmaster_running:
   cmd.run:
     - name: "test $(ps -ef | grep -i postmaster | grep -v grep | wc -l) -eq 0 || \
-             (echo '存在运行中的postgresql进程，请手动检查vm.hugetlb_shm_group设置！' ; false)"
+             (echo 'postmaster runniung,please check the vm.hugetlb_shm_group setting!' ; false)"
 
 
 # 1. 操作系统检查
 
 {% if ( os_family == 'RedHat' and osarch == 'x86_64' and osmajorrelease in(6,7) ) or
-      ( os_family == 'Debian' and osarch == 'amd64'  and osmajorrelease in(14)  )
+      ( os_family == 'Debian' and osarch == 'amd64'  and osmajorrelease in(14,)  )
       %}
 os_support_check:
   cmd.run:

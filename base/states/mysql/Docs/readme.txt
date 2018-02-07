@@ -5,7 +5,7 @@
   mysql 5.7.20
 
 2. 操作系统
-  Ubuntu 14.04
+  Ubuntu 14.04          （saltstack对ubuntu系统支持的不太好，慎用！）
   CentOS 6.x
   CentOS 7.x
 
@@ -29,7 +29,7 @@ top.sls：             init.sls
 1. MySQL安装
 
 # 目标服务器（正则）
-TARGET_HOST='master'
+TARGET_HOST='none'
 
 # 配置config/install.init参数
 

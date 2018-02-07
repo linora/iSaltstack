@@ -1,14 +1,14 @@
 ################################################################################################
 # Title           :init_postgresql.sls
 # Description     :The script will install & startup & setup postgresql.
-# Author	  :linora
+# Author	      :linora
 # Date            :2018/02/05
 # Version         :0.1
 # Usage	          :salt 'none' state.sls postgresql.init_postgresql
 # Notes           :Install saltstack master to use this script. 
-# Salt_version    :2017.7.2-1.el7
+# Salt_version    :2017.7.3-1.el7
 ################################################################################################
-# Action			风险		    其他说明
+# Action			            风险		        其他说明
 # 安装postgresql                低              
 # 设置postgresql                中                  直接替换postgresql.conf及pg_hba.conf文件
 # 启动postgresql                无
