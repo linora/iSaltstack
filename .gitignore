@@ -1,12 +1,12 @@
 # 不同步MySQL数据库密码文件
 base/states/mysql/mysql_data/user.*
 
+# 不同步pycharm元数据
+.idea
+
 # 只同步stackstorm packs下以salt_开头的文件
 base/states/stackstorm/packs/*
 !base/states/stackstorm/packs/salt_*
 
 # 不同步MySQL安装包
 base/states/resources/mysql/pkgs/*
-
-# 不同步pycharm元数据
-.idea/*
