@@ -1,5 +1,6 @@
 # 不同步MySQL数据库密码文件
 base/states/mysql/mysql_data/user.*
+base/states/mariadb/mysql_data/user.*
 
 # 不同步pycharm元数据
 .idea
