@@ -22,12 +22,6 @@ parameters:
         required: true
         default: "/app/mysql"
         position: 1
-    buffer_pool_ratio:
-        type: "string"
-        description: "适用于MySQL 5.6：InnoDB buffer pool占总内存比例。"
-        required: false 
-        default: "0.125"
-        position: 2
     chunk_count:
         type: "integer"
         description: "适用于MySQL 5.7：InnoDB buffer pool chunks数量（一个chunk大小为128M）。"
