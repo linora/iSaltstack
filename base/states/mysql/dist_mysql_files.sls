@@ -62,7 +62,7 @@ dist_my_tarball:
   module.run:
     - name: cp.get_file
     - dest: /tmp/mysql_db/mysql.tar 
-    {% if osmajorrelease == 7      and mysql_version == 7 %}
+    {% if   osmajorrelease == 7    and mysql_version == 7 %}
     - path: {{ pkg_home }}/mysql-5.7.20-1.el7.x86_64.rpm-bundle.tar
     {% elif osmajorrelease == 7    and mysql_version == 6 %}
     - path: {{ pkg_home }}/MySQL-5.6.37-1.el7.x86_64.rpm-bundle.tar

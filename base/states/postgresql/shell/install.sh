@@ -40,9 +40,9 @@ yum        -y install postgresql10 \
                       postgresql10-devel
 
 myPrint    'Init PG to pg_data home:'
-chown      postgres:postgres ${PG_DATA}
+test ! -z ${PG_DATA} && test -d ${PG_DATA} && (
+chown postgres:postgres ${PG_DATA}
 su         - postgres -c "/usr/pgsql-10/bin/initdb -D ${PG_DATA}"
-
 
 myPrint    'Start postgresql & setup AutoBoot on:'
 sed        -i "s|PGDATA=/var/lib/pgsql/10/data/|PGDATA=${PG_DATA}/|" \
@@ -52,6 +52,7 @@ sed        -i "s|PGDATA=/var/lib/pgsql/10/data/|PGDATA=${PG_DATA}/|" \
   sed -i s#PGLOG=/var/lib/pgsql/10/pgstartup.log#PGLOG=/app/postgresql/pgstartup.log#g /etc/init.d/postgresql-10;
   sed -i s#PGUPLOG=/var/lib/pgsql/.*/pgupgrade.log#PGUPLOG=/app/postgresql/pgupgrade.log#g /etc/init.d/postgresql-10
 )
+
 systemctl daemon-reload
 systemctl enable postgresql-10 ||\
 chkconfig postgresql-10 on
@@ -60,3 +61,7 @@ chown postgres:postgres ${PG_DATA}
 chown -R postgres:postgres /var/run/postgresql
 service postgresql-10 restart
 service postgresql-10 stop
+)
+
+
+

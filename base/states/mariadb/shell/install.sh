@@ -50,7 +50,8 @@ service mysql  stop ||\
 service mysqld stop
 
 myPrint    'Create dirs for MySQL:'
-test ! -z $mysql_home && test -d $mysql_home && rm -rf $mysql_home/*
+test ! -z $mysql_home && test -d $mysql_home && (
+rm -rf $mysql_home/*
 mkdir -p $mysql_home/{binlog_dir,data_dir,innodb_data,tmp_dir,innodb_log,undo_dir,innodb_tmpdir}
 chown -R mysql:mysql $mysql_home/
 
@@ -68,3 +69,4 @@ service mysql  start ||\
 service mysqld start
 service mysql  stop ||\
 service mysqld stop
+)
