@@ -16,6 +16,8 @@
 
 **其他**
 
+![test](base/resources/images/aa.jpg)
+
 Owner: linora
 
   - Oracle/MySQL/PostgreSQL DBA
