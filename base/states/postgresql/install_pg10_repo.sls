@@ -22,8 +22,8 @@
 # 程序主体
 # 1. postgresql.conf分发
 
-{% if os_family == 'RedHat' and osmajorrelease in(6,7) and osarch == 'x86_64' %}
 dist_postgresql_conf:
+{% if os_family == 'RedHat' and osmajorrelease in(6,7) and osarch == 'x86_64' %}
   file.managed:
     - name: /tmp/postgresql.conf
     - source: salt://postgresql/jinja2/postgresql.j2
@@ -33,7 +33,6 @@ dist_postgresql_conf:
     - template: jinja
     - replace: True
 {% else %}
-not_support_version:
   cmd.run:
     - name: test 1 -eq 0
 {% endif %}

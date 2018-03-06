@@ -24,8 +24,8 @@
 # 程序主体
 # 1. my.cnf分发
 
-{% if   mysql_version == 6 %}
 dist_my_cnf:
+{% if   mysql_version == 6 %}
   file.managed:
     - name: /tmp/my.cnf
     - source: salt://mysql/jinja2/my56_cnf.j2
@@ -35,7 +35,6 @@ dist_my_cnf:
     - template: jinja
     - replace: True
 {% elif mysql_version == 7 %}
-dist_my_cnf:
   file.managed:
     - name: /tmp/my.cnf
     - source: salt://mysql/jinja2/my57_cnf.j2
@@ -45,7 +44,6 @@ dist_my_cnf:
     - template: jinja
     - replace: True
 {% else %}
-not_support_version:
   cmd.run:
     - name: test 1 -eq 0
 {% endif %}

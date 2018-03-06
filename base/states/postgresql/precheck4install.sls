@@ -31,14 +31,13 @@ if_mysqld_running:
 
 # 1. 操作系统检查
 
-{% if os_family == 'RedHat' and osmajorrelease in(6,7) and osarch == 'x86_64' %}
 os_support_check:
+{% if os_family == 'RedHat' and osmajorrelease in(6,7) and osarch == 'x86_64' %}
   cmd.run:
     - name: test 1 -eq 1
     - require:
       - cmd: if_mysqld_running
 {% else %}
-os_support_check:
   cmd.run:
     - name: test 1 -eq 0 
 {% endif %}

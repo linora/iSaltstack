@@ -31,14 +31,13 @@ if_postmaster_running:
 
 # 1. 操作系统检查
 
-{% if os_family == 'RedHat' and osarch == 'x86_64' and osmajorrelease in(6,7) %}
 os_support_check:
+{% if os_family == 'RedHat' and osarch == 'x86_64' and osmajorrelease in(6,7) %}
   cmd.run:
     - name: test 1 -eq 1
     - require:
       - cmd: if_postmaster_running
 {% else %}
-os_support_check:
   cmd.run:
     - name: test 1 -eq 0 
 {% endif %}

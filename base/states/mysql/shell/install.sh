@@ -34,12 +34,12 @@ myPrint() {
 
 
 myPrint    'Install deps PKGs:'
-apt-get install -y libaio1 libmecab2 ||\
-yum     install -y libaio  libaio-devel
+apt-get install -y libaio1 libmecab2    2>/dev/null ||\
+yum     install -y libaio  libaio-devel 2>/dev/null
 
 myPrint    'Uninstall MySQL conflit PKGs:'
-rpm     -e     --nodeps   mariadb-libs mysql-libs ||\
-apt-get remove --purge -y mysql-common mariadb-libs
+rpm     -e     --nodeps   mariadb-libs mysql-libs   2>/dev/null ||\
+apt-get remove --purge -y mysql-common mariadb-libs 2>/dev/null
 
 myPrint    'Clean mysql files:'
 rm -f  /var/lib/mysql/RPM_UPGRADE_MARKER
@@ -57,12 +57,11 @@ dpkg -i   *.deb
 )
 
 myPrint    'Stop mysql:'
-service mysql  stop ||\
-service mysqld stop
+service mysql  stop 2>/dev/null ||\
+service mysqld stop 2>/dev/null
 
 myPrint    'Create dirs for MySQL:'
 test ! -z $mysql_home && test -d $mysql_home && (
-rm -rf $mysql_home/*
 mkdir -p $mysql_home/{binlog_dir,data_dir,innodb_data,tmp_dir,innodb_log,undo_dir,innodb_tmpdir}
 chown -R mysql:mysql $mysql_home/
 )
@@ -73,11 +72,11 @@ myPrint    'Reconfigure my.cnf:'
 
 myPrint    'Init MySQL db:'
 rm -rf /etc/mysql
-mysql_install_db --defaults-file=/etc/my.cnf ||\
-mysqld           --defaults-file=/etc/my.cnf --initialize
+mysql_install_db --defaults-file=/etc/my.cnf               2>/dev/null ||\
+mysqld           --defaults-file=/etc/my.cnf --initialize  2>/dev/null
 
 myPrint    'Init mysql database & stop mysql:'
-service mysql  start ||\
-service mysqld start
-service mysql  stop ||\
-service mysqld stop
+service mysql  start 2>/dev/null ||\
+service mysqld start 2>/dev/null
+service mysql  stop  2>/dev/null ||\
+service mysqld stop  2>/dev/null

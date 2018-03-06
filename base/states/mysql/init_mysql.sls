@@ -55,14 +55,14 @@ sync_user_table_{{ idx }}:
 {% endfor %}
 
 
-# 3. 启动MySQL 
+# 3. 启动MySQL
 start_mysql:
   cmd.run:
     - name: "groupmod -g 1001 mysql;
              usermod  -u 1001 -g 1001 mysql;
-             service  mysql restart || service mysqld restart;
+             service  mysql restart 2>/dev/null || service mysqld restart 2>/dev/null;
              true     > {{ mysql_home }}/err.log;
-             service  mysql restart || service mysqld restart;"
+             service  mysql restart 2>/dev/null || service mysqld restart 2>/dev/null;"
     - timeout: 10
 
 
@@ -76,6 +76,6 @@ install_strings4Debian:
 verify_MySQL_install:
   cmd.run:
   - name: "strings {{ mysql_home }}/data_dir/mysql/user.MYD;
-           service mysql status || service mysqld status;
+           service mysql status 2>/dev/null || service mysqld status 2>/dev/null;
            egrep   -i '(error|fatal|warning)' {{ mysql_home }}/err.log |\
            grep    -iv 'skip-name-resolve';"
